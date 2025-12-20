@@ -25,30 +25,6 @@ archives:
 changelog:
   use: git
 
-dockers:
-  # Use the Alpine Dockerfile and publish only amd64 and arm64 images to GHCR
-  - dockerfile: Dockerfile
-    use: buildx
-    goos: linux
-    goarch: amd64
-    image_templates:
-      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-amd64"
-    build_flag_templates:
-      - "--platform=linux/amd64"
-  - dockerfile: Dockerfile
-    use: buildx
-    goos: linux
-    goarch: arm64
-    image_templates:
-      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-arm64"
-    build_flag_templates:
-      - "--platform=linux/arm64"
-
-docker_manifests:
-  - name_template: "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}"
-    image_templates:
-      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-amd64"
-      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-arm64"
 
 release:
   github:
