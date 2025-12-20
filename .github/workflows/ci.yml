@@ -3,8 +3,20 @@ name: CI
 on:
   push:
     branches: [ main, master ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.github/**'
+      - '.goreleaser.yml'
+      - 'Dockerfile*'
   pull_request:
     branches: [ main, master ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.github/**'
+      - '.goreleaser.yml'
+      - 'Dockerfile*'
 
 jobs:
   build-and-test:
