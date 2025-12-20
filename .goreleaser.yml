@@ -5,6 +5,8 @@ builds:
     main: .
     goos:
       - linux
+      - darwin
+      - windows
     goarch:
       - amd64
       - arm64
@@ -13,6 +15,9 @@ builds:
 
 archives:
   - format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
     files:
       - LICENSE
       - README.md
@@ -47,28 +52,11 @@ docker_manifests:
 
 release:
   github:
-    owner: YOUR_GITHUB_ORG
-    name: YOUR_REPO
+    owner: nulnl
+    name: nulyun
 
 # Notes:
 # - Publishes to GitHub Container Registry (ghcr.io) using Dockerfile (Alpine).
 # - Produces amd64 and arm64 images and a manifest pointing to both.
 # - Replace 'YOUR_GITHUB_ORG' and 'YOUR_REPO' with your GitHub org/user and repo name.
 # - Ensure the release workflow has `packages: write` permission and `GITHUB_TOKEN` is present.
-
-homebrew_casks:
-  - name: nulyun
-    repository:
-      owner: nulnl
-      name: nulyun
-    commit_author:
-      name: nulyun Robot
-      email: robot@nulyun.org
-    homepage: https://github.com/nulnl/nulyun
-    description: nulyun is a create-your-own-cloud software to serve files via a web interface
-    hooks:
-      post:
-        install: |
-          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/nulyun"]
-          end

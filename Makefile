@@ -42,8 +42,8 @@ install-deps:
 	go mod download
 
 frontend-install:
-# 	cd $(FRONTEND_DIR) && pnpm install --frozen-lockfile
-	cd $(FRONTEND_DIR) && pnpm install && npm i --package-lock-only
+	cd $(FRONTEND_DIR) && pnpm install --frozen-lockfile
+#	cd $(FRONTEND_DIR) && pnpm install && npm i --package-lock-only
 
 frontend-build:
 	cd $(FRONTEND_DIR) && pnpm run build
