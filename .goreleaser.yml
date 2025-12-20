@@ -1,0 +1,74 @@
+project_name: nulyun
+
+builds:
+  - id: nulyun
+    main: .
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
+archives:
+  - format: tar.gz
+    files:
+      - LICENSE
+      - README.md
+
+changelog:
+  use: git
+
+dockers:
+  # Use the Alpine Dockerfile and publish only amd64 and arm64 images to GHCR
+  - dockerfile: Dockerfile
+    use: buildx
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-amd64"
+    build_flag_templates:
+      - "--platform=linux/amd64"
+  - dockerfile: Dockerfile
+    use: buildx
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-arm64"
+    build_flag_templates:
+      - "--platform=linux/arm64"
+
+docker_manifests:
+  - name_template: "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-amd64"
+      - "ghcr.io/{{ .Env.GITHUB_REPOSITORY_OWNER }}/nulyun:{{ .Tag }}-arm64"
+
+release:
+  github:
+    owner: YOUR_GITHUB_ORG
+    name: YOUR_REPO
+
+# Notes:
+# - Publishes to GitHub Container Registry (ghcr.io) using Dockerfile (Alpine).
+# - Produces amd64 and arm64 images and a manifest pointing to both.
+# - Replace 'YOUR_GITHUB_ORG' and 'YOUR_REPO' with your GitHub org/user and repo name.
+# - Ensure the release workflow has `packages: write` permission and `GITHUB_TOKEN` is present.
+
+homebrew_casks:
+  - name: nulyun
+    repository:
+      owner: nulnl
+      name: nulyun
+    commit_author:
+      name: nulyun Robot
+      email: robot@nulyun.org
+    homepage: https://github.com/nulnl/nulyun
+    description: nulyun is a create-your-own-cloud software to serve files via a web interface
+    hooks:
+      post:
+        install: |
+          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/nulyun"]
+          end
