@@ -51,7 +51,7 @@ frontend-build:
 dist: frontend-build build
 
 release:
-	goreleaser release --rm-dist
+	goreleaser release
 
 docker-build:
 	if [ -z "$(GHCR_OWNER)" ]; then echo "GHCR_OWNER not set. Export GHCR_OWNER=<owner> or set GITHUB_REPOSITORY_OWNER env var."; exit 1; fi
