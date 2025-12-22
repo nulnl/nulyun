@@ -19,6 +19,7 @@
   "dependencies": {
     "@chenfengyuan/vue-number-input": "^2.0.1",
     "@scure/base": "^1.2.4",
+    "@simplewebauthn/browser": "^13.2.2",
     "@vueuse/core": "^14.0.0",
     "@vueuse/integrations": "^14.0.0",
     "ace-builds": "^1.43.2",

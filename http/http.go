@@ -1,9 +1,12 @@
 package fbhttp
 
 import (
+	"fmt"
 	"io/fs"
 	"net/http"
+	"sync"
 
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gorilla/mux"
 
 	settings "github.com/nulnl/nulyun/settings/global"
@@ -15,6 +18,13 @@ type modifyRequest struct {
 	Which []string `json:"which"` // Answer to: which fields?
 }
 
+var (
+	globalWebAuthn                    *webauthn.WebAuthn
+	globalPasskeyRegistrationSessions = make(map[uint]*webauthn.SessionData)
+	globalPasskeyLoginSessions        = make(map[string]*webauthn.SessionData)
+	sessionMutex                      sync.RWMutex
+)
+
 func NewHandler(
 	imgSvc ImgService,
 	fileCache FileCache,
@@ -23,6 +33,21 @@ func NewHandler(
 	assetsFs fs.FS,
 ) (http.Handler, error) {
 	server.Clean()
+
+	// Initialize WebAuthn
+	// The RP ID should be the domain without protocol/port
+	// For simplicity, we'll use "localhost" for dev and rely on the frontend to provide correct origin
+	wconfig := &webauthn.Config{
+		RPDisplayName: "Nul Yun",
+		RPID:          "localhost",                                            // Will be overridden by request origin
+		RPOrigins:     []string{"http://localhost:8080", "https://localhost"}, // Development defaults
+	}
+
+	webAuthn, err := webauthn.New(wconfig)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create WebAuthn instance: %w", err)
+	}
+	globalWebAuthn = webAuthn
 
 	r := mux.NewRouter()
 	r.Use(func(next http.Handler) http.Handler {
@@ -64,6 +89,17 @@ func NewHandler(
 	users.Handle("/{id:[0-9]+}/otp", monkey(userGetTOTPHandler, "")).Methods("GET")
 	users.Handle("/{id:[0-9]+}/otp/check", monkey(userCheckTOTPHandler, "")).Methods("POST")
 	users.Handle("/{id:[0-9]+}/otp", monkey(userDisableTOTPHandler, "")).Methods("DELETE")
+
+	// Passkey routes
+	passkeys := api.PathPrefix("/passkeys").Subrouter()
+	passkeys.Handle("", monkey(passkeyListHandler, "")).Methods("GET")
+	passkeys.Handle("/register/begin", monkey(passkeyRegisterBeginHandler, "")).Methods("POST")
+	passkeys.Handle("/register/finish", monkey(passkeyRegisterFinishHandler, "")).Methods("POST")
+	passkeys.Handle("/{id:[0-9]+}", monkey(passkeyDeleteHandler, "")).Methods("DELETE")
+
+	// Public passkey login endpoints
+	api.Handle("/passkey/login/begin", monkey(handleFunc(passkeyLoginBeginHandler), "")).Methods("POST")
+	api.Handle("/passkey/login/finish", monkey(handleFunc(passkeyLoginFinishHandler), "")).Methods("POST")
 
 	api.PathPrefix("/resources").Handler(monkey(resourceGetHandler, "/api/resources")).Methods("GET")
 	api.PathPrefix("/resources").Handler(monkey(resourceDeleteHandler(fileCache), "/api/resources")).Methods("DELETE")

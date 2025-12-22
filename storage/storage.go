@@ -3,6 +3,7 @@ package storage
 import (
 	"github.com/nulnl/nulyun/auth"
 	settings "github.com/nulnl/nulyun/settings/global"
+	"github.com/nulnl/nulyun/settings/passkey"
 	"github.com/nulnl/nulyun/settings/share"
 	"github.com/nulnl/nulyun/settings/users"
 	"github.com/nulnl/nulyun/settings/webdav"
@@ -16,4 +17,5 @@ type Storage struct {
 	Auth     *auth.Storage
 	Settings *settings.Storage
 	WebDAV   *webdav.Storage
+	Passkey  passkey.Store
 }

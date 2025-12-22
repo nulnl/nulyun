@@ -18,6 +18,7 @@ func NewStorage(db *storm.DB) (*storage.Storage, error) {
 	settingsStore := settings.NewStorage(settingsBackend{db: db})
 	authStore := auth.NewStorage(authBackend{db: db}, userStore)
 	webdavStore := webdav.NewStorage(webdavBackend{db: db})
+	passkeyStore := NewPasskeyStore(db)
 
 	err := save(db, "version", 2)
 	if err != nil {
@@ -30,5 +31,6 @@ func NewStorage(db *storm.DB) (*storage.Storage, error) {
 		Share:    shareStore,
 		Settings: settingsStore,
 		WebDAV:   webdavStore,
+		Passkey:  passkeyStore,
 	}, nil
 }
