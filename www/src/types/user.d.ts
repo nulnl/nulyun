@@ -13,6 +13,7 @@ interface IUser {
   dateFormat: boolean;
   viewMode: ViewModeType;
   otpEnabled: boolean;
+  otpPending: boolean;
   sorting?: Sorting;
   aceEditorTheme: string;
 }

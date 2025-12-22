@@ -179,6 +179,10 @@
             <span>{{ viewingToken.name }}</span>
           </div>
           <div class="detail-item">
+            <strong>Username:</strong>
+            <span>{{ authStore.user?.username }}</span>
+          </div>
+          <div class="detail-item">
             <strong>Path:</strong>
             <span>{{ viewingToken.path }}</span>
           </div>
@@ -249,6 +253,7 @@
 
 <script setup lang="ts">
 import { useLayoutStore } from "@/stores/layout";
+import { useAuthStore } from "@/stores/auth";
 import { webdav as api } from "@/api";
 import type { WebDAVToken } from "@/api/webdav";
 import Errors from "@/views/Errors.vue";
@@ -263,6 +268,7 @@ const $showSuccess = inject<IToastSuccess>("$showSuccess")!;
 const { t } = useI18n();
 
 const layoutStore = useLayoutStore();
+const authStore = useAuthStore();
 
 const error = ref<StatusError | null>(null);
 const tokens = ref<WebDAVToken[]>([]);
@@ -392,7 +398,8 @@ function formatDate(dateStr: string): string {
 }
 
 function getWebDAVUrl(): string {
-  return `${window.location.origin}/dav/`;
+  const base = window.NulYun?.BaseURL || "";
+  return `${window.location.origin}${base}/dav/`;
 }
 
 function copyToken() {

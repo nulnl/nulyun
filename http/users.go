@@ -273,10 +273,24 @@ var userEnableTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request
 	return renderJSON(w, r, enableTOTPVerificationResponse{SetupKey: key.URL()})
 })
 
-var userGetTOTPHandler = withTOTP(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+var userGetTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
 	if d.user.TOTPSecret == "" {
 		return http.StatusForbidden, fmt.Errorf("user does not enable the TOTP verification")
 	}
+
+	// If TOTP is already verified, require TOTP code for security
+	if d.user.TOTPVerified {
+		code := r.Header.Get("X-TOTP-CODE")
+		if code == "" {
+			return http.StatusForbidden, nil
+		}
+		if ok, err := users.CheckTOTP(d.settings.TOTPEncryptionKey, d.user.TOTPSecret, d.user.TOTPNonce, code); err != nil {
+			return http.StatusInternalServerError, err
+		} else if !ok {
+			return http.StatusForbidden, nil
+		}
+	}
+	// If not verified yet, allow viewing the setup key without TOTP code
 
 	secret, err := users.DecryptSymmetric(d.settings.TOTPEncryptionKey, d.user.TOTPSecret, d.user.TOTPNonce)
 	if err != nil {
@@ -298,15 +312,30 @@ var userGetTOTPHandler = withTOTP(func(w http.ResponseWriter, r *http.Request, d
 	return renderJSON(w, r, getTOTPInfoResponse{SetupKey: key.URL()})
 })
 
-var userDisableTOTPHandler = withTOTP(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+var userDisableTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
 	if d.user.TOTPSecret == "" {
 		return http.StatusOK, nil
 	}
 
+	// If TOTP is already verified, require TOTP code for security
+	if d.user.TOTPVerified {
+		code := r.Header.Get("X-TOTP-CODE")
+		if code == "" {
+			return http.StatusForbidden, nil
+		}
+		if ok, err := users.CheckTOTP(d.settings.TOTPEncryptionKey, d.user.TOTPSecret, d.user.TOTPNonce, code); err != nil {
+			return http.StatusInternalServerError, err
+		} else if !ok {
+			return http.StatusForbidden, nil
+		}
+	}
+	// If not verified yet, allow disabling without TOTP code
+
 	d.user.TOTPNonce = ""
 	d.user.TOTPSecret = ""
+	d.user.TOTPVerified = false
 
-	if err := d.store.Users.Update(d.user, "TOTPSecret", "TOTPNonce"); err != nil {
+	if err := d.store.Users.Update(d.user, "TOTPSecret", "TOTPNonce", "TOTPVerified"); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
@@ -328,6 +357,14 @@ var userCheckTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request,
 		return http.StatusInternalServerError, err
 	} else if !ok {
 		return http.StatusForbidden, nil
+	}
+
+	// Mark TOTP as verified after successful verification
+	if !d.user.TOTPVerified {
+		d.user.TOTPVerified = true
+		if err := d.store.Users.Update(d.user, "TOTPVerified"); err != nil {
+			return http.StatusInternalServerError, err
+		}
 	}
 
 	return http.StatusOK, nil

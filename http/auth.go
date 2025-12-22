@@ -41,6 +41,7 @@ type userInfo struct {
 	Username       string            `json:"username"`
 	AceEditorTheme string            `json:"aceEditorTheme"`
 	OTPEnabled     bool              `json:"otpEnabled"`
+	OTPPending     bool              `json:"otpPending"`
 }
 
 type authToken struct {
@@ -139,7 +140,7 @@ func loginHandler(totpLoginTokenExpireTime, tokenExpireTime time.Duration) handl
 			return http.StatusInternalServerError, err
 		}
 
-		if user.TOTPSecret != "" {
+		if user.TOTPSecret != "" && user.TOTPVerified {
 			return printTOTPToken(w, r, d, user, totpLoginTokenExpireTime)
 		}
 
@@ -226,8 +227,7 @@ func printToken(w http.ResponseWriter, _ *http.Request, d *data, user *users.Use
 			DateFormat:     user.DateFormat,
 			Username:       user.Username,
 			AceEditorTheme: user.AceEditorTheme,
-			OTPEnabled:     user.TOTPSecret != "",
-		},
+			OTPEnabled:     user.TOTPSecret != "" && user.TOTPVerified, OTPPending: user.TOTPSecret != "" && !user.TOTPVerified},
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExpirationTime)),

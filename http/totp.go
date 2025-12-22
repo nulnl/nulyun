@@ -70,7 +70,7 @@ func verifyTOTPHandler(tokenExpireTime time.Duration) handleFunc {
 
 func withTOTP(fn handleFunc) handleFunc {
 	return withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-		if d.user.TOTPSecret == "" {
+		if d.user.TOTPSecret == "" || !d.user.TOTPVerified {
 			return fn(w, r, d)
 		}
 

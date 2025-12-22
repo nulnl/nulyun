@@ -1,5 +1,6 @@
 <template>
   <div class="column">
+    <!-- TOTP is verified and enabled -->
     <form v-if="authStore?.user?.otpEnabled" class="card">
       <div class="card-title">
         <h2>{{ t("otp.name") }}</h2>
@@ -47,6 +48,61 @@
       </div>
     </form>
 
+    <!-- TOTP is setup but pending verification -->
+    <form v-else-if="authStore?.user?.otpPending" class="card">
+      <div class="card-title">
+        <h2>{{ t("otp.name") }} - Pending Verification</h2>
+      </div>
+
+      <div class="card-content">
+        <p class="message" v-if="!otpSetupKey">
+          TOTP has been setup but not yet verified. Please complete the verification to enable two-factor authentication.
+        </p>
+
+        <div v-if="otpSetupKey" class="card-content">
+          <div class="qrcode-container">
+            <qrcode-vue :value="otpSetupKey" :size="300" level="M" />
+          </div>
+          <div class="setup-key-container">
+            <input
+              :value="otpSecretB32"
+              class="input input--block"
+              type="text"
+              name="otpSetupKey"
+              disabled
+            />
+            <button class="action copy-clipboard" @click="copyOtpSetupKey">
+              <i class="material-icons">content_paste_go</i>
+            </button>
+          </div>
+          <div class="setup-key-container">
+            <input
+              v-model="otpCode"
+              :placeholder="t('settings.otpCodeCheckPlaceholder')"
+              type="text"
+              pattern="[0-9]*"
+              inputmode="numeric"
+              maxlength="6"
+              class="input input--block"
+            />
+            <button class="action copy-clipboard" @click="checkOtpCode">
+              <i class="material-icons">send</i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-action">
+          <button v-if="!otpSetupKey" class="button button--flat" @click="showOtpInfo">
+            View Setup Key
+          </button>
+          <button class="button button--flat button--red" @click="cancelOtpSetup">
+            Cancel Setup
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- TOTP is not enabled -->
     <form v-else class="card" @submit="enable2FA">
       <div class="card-title">
         <h2>{{ t("otp.name") }}</h2>
@@ -139,21 +195,34 @@ const otpSecretB32 = computed(() => {
 
 const showOtpInfo = async (event: Event) => {
   event.preventDefault();
-  layoutStore.showHover({
-    prompt: "otp",
-    confirm: async (code: string) => {
-      if (authStore.user === null) {
-        return;
-      }
+  
+  if (authStore.user === null) {
+    return;
+  }
+  const userId = authStore.user.id;
 
-      try {
-        const res = await api.getOtpInfo(authStore.user.id, code);
-        otpSetupKey.value = res.setupKey;
-      } catch (err: any) {
-        $showError(err);
-      }
-    },
-  });
+  // If TOTP is already verified, require OTP code for security
+  if (authStore.user.otpEnabled) {
+    layoutStore.showHover({
+      prompt: "otp",
+      confirm: async (code: string) => {
+        try {
+          const res = await api.getOtpInfo(userId, code);
+          otpSetupKey.value = res.setupKey;
+        } catch (err: any) {
+          $showError(err);
+        }
+      },
+    });
+  } else {
+    // If not verified yet, show directly without OTP code
+    try {
+      const res = await api.getOtpInfo(userId, "");
+      otpSetupKey.value = res.setupKey;
+    } catch (err: any) {
+      $showError(err);
+    }
+  }
 };
 const disableOtp = async (event: Event) => {
   event.preventDefault();
@@ -169,6 +238,7 @@ const disableOtp = async (event: Event) => {
         await api.disableOtp(authStore.user.id, code);
         otpSetupKey.value = "";
         authStore.user.otpEnabled = false;
+        authStore.user.otpPending = false;
       } catch (err: any) {
         $showError(err);
       }
@@ -185,7 +255,8 @@ const enable2FA = async (event: Event) => {
     const res = await api.enableOTP(authStore.user.id, passwordForOTP.value);
 
     otpSetupKey.value = res.setupKey;
-    authStore.user.otpEnabled = true;
+    // Set pending state, not enabled yet
+    authStore.user.otpPending = true;
     $showSuccess(t("otp.enabledSuccessfully"));
   } catch (err: any) {
     $showError(err);
@@ -221,10 +292,38 @@ const checkOtpCode = async (event: Event) => {
 
   try {
     await api.checkOtp(authStore.user.id, otpCode.value);
+    // Only after successful verification, mark TOTP as enabled and clear pending
+    authStore.user.otpEnabled = true;
+    authStore.user.otpPending = false;
     $showSuccess(t("otp.verificationSucceed"));
+    // Clear the setup key after successful verification
+    otpSetupKey.value = "";
+    otpCode.value = "";
   } catch (err: any) {
     console.log(err);
     $showError(t("otp.verificationFailed"));
+  }
+};
+
+const cancelOtpSetup = async (event: Event) => {
+  event.preventDefault();
+  
+  if (!confirm("Are you sure you want to cancel TOTP setup? You will need to start over.")) {
+    return;
+  }
+
+  if (authStore.user === null) {
+    return;
+  }
+
+  try {
+    // Disable OTP without requiring a code since it's not verified yet
+    await api.disableOtp(authStore.user.id, "");
+    otpSetupKey.value = "";
+    authStore.user.otpPending = false;
+    $showSuccess("TOTP setup cancelled");
+  } catch (err: any) {
+    $showError(err);
   }
 };
 </script>
