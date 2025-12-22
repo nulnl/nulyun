@@ -39,6 +39,9 @@ type User struct {
 	TOTPSecret     string        `json:"totpSecret"`
 	TOTPNonce      string        `json:"totpNonce"`
 	TOTPVerified   bool          `json:"totpVerified"`
+	TOTPEnabled    bool          `json:"totpEnabled"`
+	RecoveryCodes  []string      `json:"recoveryCodes"`
+	PasskeyEnabled bool          `json:"passkeyEnabled"`
 }
 
 // GetRules implements rules.Provider.

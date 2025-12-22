@@ -126,3 +126,39 @@ func CheckTOTP(totpEncryptionKey []byte, encryptedSecretB64, nonceB64, code stri
 
 	return totp.Validate(code, secret), nil
 }
+
+// GenerateRecoveryCodes generates 10 recovery codes
+func GenerateRecoveryCodes() ([]string, error) {
+	codes := make([]string, 10)
+	for i := 0; i < 10; i++ {
+		// Generate 8 bytes of random data, encode to base32 (becomes ~13 chars)
+		randomBytes := make([]byte, 8)
+		_, err := rand.Read(randomBytes)
+		if err != nil {
+			return nil, err
+		}
+		// Format as XXXX-XXXX-XXXX for readability
+		code := base64.RawStdEncoding.EncodeToString(randomBytes)
+		// Take first 12 chars and format
+		if len(code) > 12 {
+			code = code[:12]
+		}
+		formattedCode := code[:4] + "-" + code[4:8] + "-" + code[8:]
+		codes[i], err = HashPwd(formattedCode)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return codes, nil
+}
+
+// ValidateRecoveryCode checks if the provided code matches any unused recovery code
+// Returns the index of the matched code, or -1 if no match found
+func ValidateRecoveryCode(code string, hashedCodes []string) int {
+	for i, hashedCode := range hashedCodes {
+		if hashedCode != "" && CheckPwd(code, hashedCode) {
+			return i
+		}
+	}
+	return -1
+}

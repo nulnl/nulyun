@@ -89,6 +89,10 @@ func NewHandler(
 	users.Handle("/{id:[0-9]+}/otp", monkey(userGetTOTPHandler, "")).Methods("GET")
 	users.Handle("/{id:[0-9]+}/otp/check", monkey(userCheckTOTPHandler, "")).Methods("POST")
 	users.Handle("/{id:[0-9]+}/otp", monkey(userDisableTOTPHandler, "")).Methods("DELETE")
+	users.Handle("/{id:[0-9]+}/otp/reset", monkey(userResetTOTPHandler, "")).Methods("POST")
+	users.Handle("/{id:[0-9]+}/otp/recovery", monkey(userGenerateRecoveryCodesHandler, "")).Methods("POST")
+	users.Handle("/{id:[0-9]+}/otp/toggle", monkey(userToggleTOTPHandler, "")).Methods("PUT")
+	users.Handle("/{id:[0-9]+}/passkey/toggle", monkey(userTogglePasskeyHandler, "")).Methods("PUT")
 
 	// Passkey routes
 	passkeys := api.PathPrefix("/passkeys").Subrouter()

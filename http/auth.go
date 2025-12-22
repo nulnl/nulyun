@@ -140,7 +140,8 @@ func loginHandler(totpLoginTokenExpireTime, tokenExpireTime time.Duration) handl
 			return http.StatusInternalServerError, err
 		}
 
-		if user.TOTPSecret != "" && user.TOTPVerified {
+		// Check if TOTP is globally enabled and user has TOTP enabled
+		if d.settings.TOTPEnabled && user.TOTPEnabled && user.TOTPSecret != "" && user.TOTPVerified {
 			return printTOTPToken(w, r, d, user, totpLoginTokenExpireTime)
 		}
 

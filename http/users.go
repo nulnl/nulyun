@@ -1,6 +1,8 @@
 package fbhttp
 
 import (
+	"crypto/rand"
+	"encoding/base32"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,8 +10,6 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
-
-	"encoding/base32"
 
 	"github.com/gorilla/mux"
 	"github.com/pquerna/otp/totp"
@@ -365,6 +365,196 @@ var userCheckTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request,
 		if err := d.store.Users.Update(d.user, "TOTPVerified"); err != nil {
 			return http.StatusInternalServerError, err
 		}
+	}
+
+	return http.StatusOK, nil
+})
+
+// userResetTOTPHandler resets TOTP secret for a user (self or admin)
+var userResetTOTPHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	// Verify password or TOTP for security
+	if d.user.ID == targetUser.ID {
+		// User resetting their own TOTP - require password
+		if r.Body == nil {
+			return http.StatusBadRequest, fberrors.ErrEmptyRequest
+		}
+
+		var req enableTOTPVerificationRequest
+		err := json.NewDecoder(r.Body).Decode(&req)
+		if err != nil {
+			return http.StatusBadRequest, fmt.Errorf("Invalid request body: %w", err)
+		}
+		if req.Password == "" {
+			return http.StatusBadRequest, fberrors.ErrEmptyPassword
+		}
+		if !users.CheckPwd(req.Password, d.user.Password) {
+			return http.StatusBadRequest, errors.New("password is incorrect")
+		}
+	}
+	// Admin can reset without password
+
+	// Generate new TOTP secret
+	ops := totp.GenerateOpts{AccountName: targetUser.Username, Issuer: TOTPIssuer}
+	key, err := totp.Generate(ops)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	encryptedSecret, nonce, err := users.EncryptSymmetric(d.settings.TOTPEncryptionKey, []byte(key.Secret()))
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	targetUser.TOTPSecret = encryptedSecret
+	targetUser.TOTPNonce = nonce
+	targetUser.TOTPVerified = false
+	targetUser.RecoveryCodes = []string{} // Clear old recovery codes
+
+	if err := d.store.Users.Update(targetUser, "TOTPSecret", "TOTPNonce", "TOTPVerified", "RecoveryCodes"); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return renderJSON(w, r, enableTOTPVerificationResponse{SetupKey: key.URL()})
+})
+
+type recoveryCodesResponse struct {
+	Codes []string `json:"codes"`
+}
+
+// userGenerateRecoveryCodesHandler generates new recovery codes for a user
+var userGenerateRecoveryCodesHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	// Check if TOTP is enabled for this user
+	if targetUser.TOTPSecret == "" || !targetUser.TOTPVerified {
+		return http.StatusBadRequest, fmt.Errorf("TOTP must be enabled and verified before generating recovery codes")
+	}
+
+	// Verify password or TOTP for security
+	if d.user.ID == targetUser.ID {
+		// User generating their own codes
+		if targetUser.TOTPVerified {
+			code := r.Header.Get("X-TOTP-CODE")
+			if code == "" {
+				return http.StatusForbidden, nil
+			}
+			if ok, err := users.CheckTOTP(d.settings.TOTPEncryptionKey, targetUser.TOTPSecret, targetUser.TOTPNonce, code); err != nil {
+				return http.StatusInternalServerError, err
+			} else if !ok {
+				return http.StatusForbidden, nil
+			}
+		}
+	}
+	// Admin can generate without TOTP
+
+	// Generate recovery codes
+	codes, err := users.GenerateRecoveryCodes()
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	// Store hashed codes
+	targetUser.RecoveryCodes = codes
+	if err := d.store.Users.Update(targetUser, "RecoveryCodes"); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	// Return plain text codes to user (only time they'll see them)
+	// We need to regenerate the plain codes since we stored hashed versions
+	newCodes, err := generatePlainRecoveryCodes()
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	// Hash and update
+	hashedCodes := make([]string, len(newCodes))
+	for i, code := range newCodes {
+		hashedCodes[i], err = users.HashPwd(code)
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+	}
+	targetUser.RecoveryCodes = hashedCodes
+	if err := d.store.Users.Update(targetUser, "RecoveryCodes"); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return renderJSON(w, r, recoveryCodesResponse{Codes: newCodes})
+})
+
+// Helper function to generate plain recovery codes
+func generatePlainRecoveryCodes() ([]string, error) {
+	codes := make([]string, 10)
+	for i := 0; i < 10; i++ {
+		randomBytes := make([]byte, 8)
+		_, err := rand.Read(randomBytes)
+		if err != nil {
+			return nil, err
+		}
+		code := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(randomBytes)
+		if len(code) > 12 {
+			code = code[:12]
+		}
+		// Format as XXXX-XXXX-XXXX
+		formattedCode := code[:4] + "-" + code[4:8] + "-" + code[8:]
+		codes[i] = formattedCode
+	}
+	return codes, nil
+}
+
+// userToggleTOTPHandler enables or disables TOTP for a user (admin only for other users)
+var userToggleTOTPHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	type toggleRequest struct {
+		Enabled bool `json:"enabled"`
+	}
+
+	var req toggleRequest
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return http.StatusBadRequest, fmt.Errorf("Invalid request body: %w", err)
+	}
+
+	targetUser.TOTPEnabled = req.Enabled
+	if err := d.store.Users.Update(targetUser, "TOTPEnabled"); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+})
+
+// userTogglePasskeyHandler enables or disables Passkey for a user (admin only for other users)
+var userTogglePasskeyHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	type toggleRequest struct {
+		Enabled bool `json:"enabled"`
+	}
+
+	var req toggleRequest
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return http.StatusBadRequest, fmt.Errorf("Invalid request body: %w", err)
+	}
+
+	targetUser.PasskeyEnabled = req.Enabled
+	if err := d.store.Users.Update(targetUser, "PasskeyEnabled"); err != nil {
+		return http.StatusInternalServerError, err
 	}
 
 	return http.StatusOK, nil

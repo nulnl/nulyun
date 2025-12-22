@@ -41,10 +41,37 @@
         </button>
       </div>
 
-      <div v-if="!otpSetupKey" class="card-action">
+      <div v-if="!otpSetupKey && !showRecoveryCodes" class="card-action">
         <button class="button button--flat" @click="showOtpInfo">
           {{ t("prompts.show") }}
         </button>
+        <button class="button button--flat" @click="resetOtpKey">
+          Reset TOTP
+        </button>
+        <button class="button button--flat" @click="generateRecovery">
+          Generate Recovery Codes
+        </button>
+      </div>
+
+      <!-- Recovery Codes Display -->
+      <div v-if="showRecoveryCodes" class="card-content">
+        <h3>Recovery Codes</h3>
+        <p class="message warning">
+          Save these recovery codes in a safe place. Each code can only be used once.
+        </p>
+        <div class="recovery-codes">
+          <div v-for="code in recoveryCodes" :key="code" class="recovery-code">
+            {{ code }}
+          </div>
+        </div>
+        <div class="card-action">
+          <button class="button button--flat" @click="copyRecoveryCodes">
+            Copy All
+          </button>
+          <button class="button button--flat" @click="closeRecoveryCodes">
+            Close
+          </button>
+        </div>
       </div>
     </form>
 
@@ -184,6 +211,9 @@ const $showError = inject<IToastError>("$showError")!;
 const passwordForOTP = ref<string>("");
 const otpSetupKey = ref<string>("");
 const otpCode = ref<string>("");
+const showRecoveryCodes = ref<boolean>(false);
+const recoveryCodes = ref<string[]>([]);
+const resetPasswordInput = ref<string>("");
 
 const otpSecretB32 = computed(() => {
   if (!otpSetupKey.value) return "";
@@ -326,6 +356,61 @@ const cancelOtpSetup = async (event: Event) => {
     $showError(err);
   }
 };
+
+const resetOtpKey = async (event: Event) => {
+  event.preventDefault();
+
+  const password = prompt("Enter your password to reset TOTP:");
+  if (!password) {
+    return;
+  }
+
+  if (authStore.user === null) {
+    return;
+  }
+
+  try {
+    const res = await api.resetOtp(authStore.user.id, password);
+    otpSetupKey.value = res.setupKey;
+    $showSuccess("TOTP key has been reset. Please reconfigure your authenticator app.");
+  } catch (err: any) {
+    $showError(err);
+  }
+};
+
+const generateRecovery = async (event: Event) => {
+  event.preventDefault();
+
+  layoutStore.showHover({
+    prompt: "otp",
+    confirm: async (code: string) => {
+      if (authStore.user === null) {
+        return;
+      }
+
+      try {
+        const res = await api.generateRecoveryCodes(authStore.user.id, code);
+        recoveryCodes.value = res.codes;
+        showRecoveryCodes.value = true;
+        $showSuccess("Recovery codes generated successfully");
+      } catch (err: any) {
+        $showError(err);
+      }
+    },
+  });
+};
+
+const copyRecoveryCodes = async (event: Event) => {
+  event.preventDefault();
+  const text = recoveryCodes.value.join("\n");
+  await copyToClipboard(text);
+};
+
+const closeRecoveryCodes = (event: Event) => {
+  event.preventDefault();
+  showRecoveryCodes.value = false;
+  recoveryCodes.value = [];
+};
 </script>
 
 <style lang="css" scoped>
@@ -343,5 +428,32 @@ const cancelOtpSetup = async (event: Event) => {
 
 .setup-key-container > * {
   margin: 0 0.5em;
+}
+
+.recovery-codes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5em;
+  margin: 1em 0;
+  padding: 1em;
+  background: var(--surfaceSecondary);
+  border-radius: 0.5em;
+}
+
+.recovery-code {
+  font-family: monospace;
+  font-size: 1.1em;
+  padding: 0.5em;
+  background: var(--surfacePrimary);
+  border-radius: 0.25em;
+  text-align: center;
+}
+
+.message.warning {
+  color: var(--colorWarning);
+  background: var(--surfaceWarning);
+  padding: 0.75em;
+  border-radius: 0.25em;
+  margin-bottom: 1em;
 }
 </style>

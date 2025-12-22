@@ -50,6 +50,11 @@ func (u *WebAuthnUser) WebAuthnIcon() string {
 
 // passkeyListHandler lists all passkeys for the current user
 var passkeyListHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	// Check if passkey is globally enabled and user has passkey enabled
+	if !d.settings.PasskeyEnabled || !d.user.PasskeyEnabled {
+		return http.StatusForbidden, fmt.Errorf("passkey is not enabled")
+	}
+
 	credentials, err := d.store.Passkey.GetByUserID(d.user.ID)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -78,6 +83,11 @@ var passkeyListHandler = withUser(func(w http.ResponseWriter, r *http.Request, d
 
 // passkeyRegisterBeginHandler begins passkey registration
 var passkeyRegisterBeginHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	// Check if passkey is globally enabled and user has passkey enabled
+	if !d.settings.PasskeyEnabled || !d.user.PasskeyEnabled {
+		return http.StatusForbidden, fmt.Errorf("passkey is not enabled")
+	}
+
 	credentials, err := d.store.Passkey.GetByUserID(d.user.ID)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -228,6 +238,11 @@ var passkeyLoginFinishHandler = func(w http.ResponseWriter, r *http.Request, d *
 	user, err := d.store.Users.Get(d.server.Root, credential.UserID)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+
+	// Check if passkey is globally enabled and user has passkey enabled
+	if !d.settings.PasskeyEnabled || !user.PasskeyEnabled {
+		return http.StatusForbidden, fmt.Errorf("passkey is not enabled")
 	}
 
 	// Get all user credentials for validation

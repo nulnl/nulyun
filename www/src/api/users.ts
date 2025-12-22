@@ -83,3 +83,43 @@ export async function disableOtp(id: number, code: string) {
     },
   });
 }
+
+export async function resetOtp(id: number, password: string) {
+  const res = await fetchURL(`/api/users/${id}/otp/reset`, {
+    method: "POST",
+    body: JSON.stringify({
+      password,
+    }),
+  });
+  const payload: IOtpSetupKey = await res.json();
+  return payload;
+}
+
+export async function generateRecoveryCodes(id: number, code: string) {
+  const res = await fetchURL(`/api/users/${id}/otp/recovery`, {
+    method: "POST",
+    headers: {
+      "X-TOTP-CODE": code,
+    },
+  });
+  const payload: { codes: string[] } = await res.json();
+  return payload;
+}
+
+export async function toggleOtp(id: number, enabled: boolean) {
+  return fetchURL(`/api/users/${id}/otp/toggle`, {
+    method: "PUT",
+    body: JSON.stringify({
+      enabled,
+    }),
+  });
+}
+
+export async function togglePasskey(id: number, enabled: boolean) {
+  return fetchURL(`/api/users/${id}/passkey/toggle`, {
+    method: "PUT",
+    body: JSON.stringify({
+      enabled,
+    }),
+  });
+}

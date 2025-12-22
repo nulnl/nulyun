@@ -3,21 +3,20 @@
     <div class="card-title">
       <h2>{{ t("otp.name") }}</h2>
       <p>{{ t("otp.verifyInstructions") }}</p>
+      <p class="recovery-hint">Or enter a recovery code (XXXX-XXXX-XXXX)</p>
     </div>
 
     <div class="card-content">
       <input
         v-model.trim="totpCode"
         :class="inputClassObject"
-        :placeholder="t('otp.codeInputPlaceholder')"
+        :placeholder="isRecoveryCode ? 'XXXX-XXXX-XXXX' : t('otp.codeInputPlaceholder')"
         @keyup.enter="submit"
         id="focus-prompt"
         tabindex="1"
         class="input input--block"
         type="text"
-        pattern="[0-9]*"
-        inputmode="numeric"
-        maxlength="6"
+        :maxlength="isRecoveryCode ? 14 : 6"
         required
         autocomplete="one-time-code"
         aria-describedby="totp-error"
@@ -62,11 +61,24 @@ const inputClassObject = computed(() => ({
   empty: totpCode.value === "",
 }));
 
+const isRecoveryCode = computed(() => {
+  return totpCode.value.includes("-");
+});
+
 const submit = async (event: Event) => {
   event.preventDefault();
   event.stopPropagation();
-  if (totpCode.value.length !== 6 || !/^\d+$/.test(totpCode.value)) {
-    throw new Error(t("otp.invalidCodeType"));
+  
+  if (isRecoveryCode.value) {
+    if (!/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(totpCode.value)) {
+      $showError("Invalid recovery code format. Use XXXX-XXXX-XXXX");
+      return;
+    }
+  } else {
+    if (totpCode.value.length !== 6 || !/^\d+$/.test(totpCode.value)) {
+      $showError(t("otp.invalidCodeType"));
+      return;
+    }
   }
 
   try {
@@ -83,3 +95,11 @@ const submit = async (event: Event) => {
   layoutStore.closeHovers();
 };
 </script>
+
+<style scoped>
+.recovery-hint {
+  font-size: 0.9em;
+  opacity: 0.7;
+  margin-top: 0.5em;
+}
+</style>

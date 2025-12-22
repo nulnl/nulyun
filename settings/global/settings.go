@@ -39,6 +39,8 @@ type Settings struct {
 	DirMode               fs.FileMode         `json:"dirMode"`
 	HideDotfiles          bool                `json:"hideDotfiles"`
 	TOTPEncryptionKey     []byte              `json:"totpEncryptionKey"`
+	TOTPEnabled           bool                `json:"totpEnabled"`
+	PasskeyEnabled        bool                `json:"passkeyEnabled"`
 }
 
 // GetRules implements rules.Provider.

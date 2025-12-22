@@ -58,32 +58,60 @@ func verifyTOTPHandler(tokenExpireTime time.Duration) handleFunc {
 			return http.StatusInternalServerError, err
 		}
 
-		if ok, err := users.CheckTOTP(d.settings.TOTPEncryptionKey, d.user.TOTPSecret, d.user.TOTPNonce, code); err != nil {
-			return http.StatusInternalServerError, err
-		} else if !ok {
-			return http.StatusUnauthorized, nil
+		// Check if TOTP is globally enabled and user has TOTP enabled
+		if !d.settings.TOTPEnabled || !d.user.TOTPEnabled {
+			return http.StatusForbidden, nil
 		}
 
-		return printToken(w, r, d, d.user, tokenExpireTime)
+		// First try TOTP validation
+		if ok, err := users.CheckTOTP(d.settings.TOTPEncryptionKey, d.user.TOTPSecret, d.user.TOTPNonce, code); err != nil {
+			return http.StatusInternalServerError, err
+		} else if ok {
+			return printToken(w, r, d, d.user, tokenExpireTime)
+		}
+
+		// If TOTP failed, try recovery code
+		if idx := users.ValidateRecoveryCode(code, d.user.RecoveryCodes); idx >= 0 {
+			// Mark this recovery code as used by clearing it
+			d.user.RecoveryCodes[idx] = ""
+			if err := d.store.Users.Update(d.user, "RecoveryCodes"); err != nil {
+				return http.StatusInternalServerError, err
+			}
+			return printToken(w, r, d, d.user, tokenExpireTime)
+		}
+
+		return http.StatusUnauthorized, nil
 	}
 }
 
 func withTOTP(fn handleFunc) handleFunc {
 	return withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-		if d.user.TOTPSecret == "" || !d.user.TOTPVerified {
+		// Skip TOTP check if globally disabled or user doesn't have TOTP enabled
+		if !d.settings.TOTPEnabled || !d.user.TOTPEnabled || d.user.TOTPSecret == "" || !d.user.TOTPVerified {
 			return fn(w, r, d)
 		}
 
 		if code := r.Header.Get("X-TOTP-CODE"); code == "" {
 			return http.StatusForbidden, nil
 		} else {
+			// First try TOTP validation
 			if ok, err := users.CheckTOTP(d.settings.TOTPEncryptionKey, d.user.TOTPSecret, d.user.TOTPNonce, code); err != nil {
 				return http.StatusInternalServerError, err
-			} else if !ok {
-				return http.StatusForbidden, nil
+			} else if ok {
+				return fn(w, r, d)
 			}
 
-			return fn(w, r, d)
+			// If TOTP failed, try recovery code
+			if idx := users.ValidateRecoveryCode(code, d.user.RecoveryCodes); idx >= 0 {
+				// Mark this recovery code as used by clearing it
+				d.user.RecoveryCodes[idx] = ""
+				if err := d.store.Users.Update(d.user, "RecoveryCodes"); err != nil {
+					return http.StatusInternalServerError, err
+				}
+				return fn(w, r, d)
+			}
+
+			return http.StatusForbidden, nil
 		}
 	})
 }
