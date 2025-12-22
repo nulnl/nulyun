@@ -6,8 +6,6 @@ import (
 	"log"
 	"strings"
 	"time"
-
-	"github.com/nulnl/nulyun/rules"
 )
 
 const DefaultUsersHomeBasePath = "/users"
@@ -31,9 +29,7 @@ type Settings struct {
 	LogoutPage            string              `json:"logoutPage"`
 	Branding              Branding            `json:"branding"`
 	Tus                   Tus                 `json:"tus"`
-	Commands              map[string][]string `json:"commands"`
 	Shell                 []string            `json:"shell"`
-	Rules                 []rules.Rule        `json:"rules"`
 	MinimumPasswordLength uint                `json:"minimumPasswordLength"`
 	FileMode              fs.FileMode         `json:"fileMode"`
 	DirMode               fs.FileMode         `json:"dirMode"`
@@ -41,11 +37,6 @@ type Settings struct {
 	TOTPEncryptionKey     []byte              `json:"totpEncryptionKey"`
 	TOTPEnabled           bool                `json:"totpEnabled"`
 	PasskeyEnabled        bool                `json:"passkeyEnabled"`
-}
-
-// GetRules implements rules.Provider.
-func (s *Settings) GetRules() []rules.Rule {
-	return s.Rules
 }
 
 // Server specific settings.
@@ -60,7 +51,6 @@ type Server struct {
 	Log                     string `json:"log"`
 	EnableThumbnails        bool   `json:"enableThumbnails"`
 	ResizePreview           bool   `json:"resizePreview"`
-	EnableExec              bool   `json:"enableExec"`
 	TypeDetectionByHeader   bool   `json:"typeDetectionByHeader"`
 	AuthHook                string `json:"authHook"`
 	TokenExpirationTime     string `json:"tokenExpirationTime"`

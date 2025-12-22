@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	"github.com/spf13/afero"
-
-	"github.com/nulnl/nulyun/rules"
 )
 
 type searchOptions struct {
@@ -18,7 +16,7 @@ type searchOptions struct {
 }
 
 // Search searches for a query in a fs.
-func Search(fs afero.Fs, scope, query string, checker rules.Checker, found func(path string, f os.FileInfo) error) error {
+func Search(fs afero.Fs, scope, query string, checker Checker, found func(path string, f os.FileInfo) error) error {
 	search := parseSearch(query)
 
 	scope = filepath.ToSlash(filepath.Clean(scope))

@@ -106,7 +106,6 @@ func addServerFlags(flags *pflag.FlagSet) {
 	flags.String("totpTokenExpirationTime", "2m", "user totp session timeout to login")
 	flags.Bool("disableThumbnails", false, "disable image thumbnails")
 	flags.Bool("disablePreviewResize", false, "disable resize of image previews")
-	flags.Bool("disableExec", true, "disables Command Runner feature")
 	flags.Bool("disableTypeDetectionByHeader", false, "disables type detection by reading file headers")
 }
 
@@ -340,10 +339,6 @@ func getServerSettings(v *viper.Viper, st *storage.Storage) (*settings.Server, e
 		server.TypeDetectionByHeader = !v.GetBool("disableTypeDetectionByHeader")
 	}
 
-	if v.IsSet("disableExec") {
-		server.EnableExec = !v.GetBool("disableExec")
-	}
-
 	if isAddrSet && isSocketSet {
 		return nil, errors.New("--socket flag cannot be used with --address, --port, --key nor --cert")
 	}
@@ -351,13 +346,6 @@ func getServerSettings(v *viper.Viper, st *storage.Storage) (*settings.Server, e
 	// Do not use saved Socket if address was manually set.
 	if isAddrSet && server.Socket != "" {
 		server.Socket = ""
-	}
-
-	if server.EnableExec {
-		log.Println("WARNING: Command Runner feature enabled!")
-		log.Println("WARNING: This feature has known security vulnerabilities and should not")
-		log.Println("WARNING: you fully understand the risks involved. For more information")
-		log.Println("WARNING: read https://github.com/nulnl/nulyun/issues/5199")
 	}
 
 	return server, nil
@@ -413,9 +401,7 @@ func quickSetup(v *viper.Viper, s *storage.Storage) error {
 			ChunkSize:  settings.DefaultTusChunkSize,
 			RetryCount: settings.DefaultTusRetryCount,
 		},
-		Commands: nil,
 		Shell:    nil,
-		Rules:    nil,
 	}
 
 	var err error
@@ -447,7 +433,6 @@ func quickSetup(v *viper.Viper, s *storage.Storage) error {
 		TOTPTokenExpirationTime: v.GetString("totpTokenExpirationTime"),
 		EnableThumbnails:        !v.GetBool("disableThumbnails"),
 		ResizePreview:           !v.GetBool("disablePreviewResize"),
-		EnableExec:              !v.GetBool("disableExec"),
 		TypeDetectionByHeader:   !v.GetBool("disableTypeDetectionByHeader"),
 	}
 

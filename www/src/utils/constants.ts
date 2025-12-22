@@ -15,7 +15,6 @@ const loginPage: boolean = window.NulYun.LoginPage;
 const theme: UserTheme = window.NulYun.Theme;
 const enableThumbs: boolean = window.NulYun.EnableThumbs;
 const resizePreview: boolean = window.NulYun.ResizePreview;
-const enableExec: boolean = window.NulYun.EnableExec;
 const tusSettings = window.NulYun.TusSettings;
 const origin = window.location.origin;
 const tusEndpoint = `/api/tus`;
@@ -38,7 +37,6 @@ export {
   theme,
   enableThumbs,
   resizePreview,
-  enableExec,
   tusSettings,
   origin,
   tusEndpoint,

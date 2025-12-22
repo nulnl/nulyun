@@ -5,8 +5,6 @@ interface IUser {
   scope: string;
   locale: string;
   perm: Permissions;
-  commands: string[];
-  rules: IRule[];
   lockPassword: boolean;
   hideDotfiles: boolean;
   singleClick: boolean;
@@ -27,8 +25,6 @@ interface IUserForm {
   scope?: string;
   locale?: string;
   perm?: Permissions;
-  commands?: string[];
-  rules?: IRule[];
   lockPassword?: boolean;
   hideDotfiles?: boolean;
   singleClick?: boolean;

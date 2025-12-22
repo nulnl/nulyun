@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/nulnl/nulyun/rules"
 	settings "github.com/nulnl/nulyun/settings/global"
 )
 
@@ -15,11 +14,9 @@ type settingsData struct {
 	MinimumPasswordLength uint                  `json:"minimumPasswordLength"`
 	UserHomeBasePath      string                `json:"userHomeBasePath"`
 	Defaults              settings.UserDefaults `json:"defaults"`
-	Rules                 []rules.Rule          `json:"rules"`
 	Branding              settings.Branding     `json:"branding"`
 	Tus                   settings.Tus          `json:"tus"`
 	Shell                 []string              `json:"shell"`
-	Commands              map[string][]string   `json:"commands"`
 	TOTPEnabled           bool                  `json:"totpEnabled"`
 	PasskeyEnabled        bool                  `json:"passkeyEnabled"`
 }
@@ -32,11 +29,9 @@ var settingsGetHandler = withAdmin(func(w http.ResponseWriter, r *http.Request, 
 		MinimumPasswordLength: d.settings.MinimumPasswordLength,
 		UserHomeBasePath:      d.settings.UserHomeBasePath,
 		Defaults:              d.settings.Defaults,
-		Rules:                 d.settings.Rules,
 		Branding:              d.settings.Branding,
 		Tus:                   d.settings.Tus,
 		Shell:                 d.settings.Shell,
-		Commands:              d.settings.Commands,
 		TOTPEnabled:           d.settings.TOTPEnabled,
 		PasskeyEnabled:        d.settings.PasskeyEnabled,
 	}
@@ -56,11 +51,9 @@ var settingsPutHandler = withAdmin(func(_ http.ResponseWriter, r *http.Request, 
 	d.settings.MinimumPasswordLength = req.MinimumPasswordLength
 	d.settings.UserHomeBasePath = req.UserHomeBasePath
 	d.settings.Defaults = req.Defaults
-	d.settings.Rules = req.Rules
 	d.settings.Branding = req.Branding
 	d.settings.Tus = req.Tus
 	d.settings.Shell = req.Shell
-	d.settings.Commands = req.Commands
 	d.settings.HideLoginButton = req.HideLoginButton
 	d.settings.TOTPEnabled = req.TOTPEnabled
 	d.settings.PasskeyEnabled = req.PasskeyEnabled

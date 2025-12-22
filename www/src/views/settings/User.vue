@@ -96,7 +96,6 @@ const fetchData = async () => {
         ...defaults,
         username: "",
         password: "",
-        rules: [],
         lockPassword: false,
         id: 0,
         otpEnabled: false,

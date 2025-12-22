@@ -261,7 +261,6 @@ func tusPatchHandler() handleFunc {
 
 		if newOffset >= uploadLength {
 			completeUpload(file.RealPath())
-			_ = d.RunHook(func() error { return nil }, "upload", r.URL.Path, "", d.user)
 		}
 
 		return http.StatusNoContent, nil

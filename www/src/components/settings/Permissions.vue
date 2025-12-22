@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import { enableExec } from "@/utils/constants";
 export default {
   name: "permissions",
   props: ["perm"],
@@ -59,7 +58,6 @@ export default {
         this.perm.admin = value;
       },
     },
-    isExecEnabled: () => enableExec,
   },
 };
 </script>

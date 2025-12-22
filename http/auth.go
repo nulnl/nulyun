@@ -34,7 +34,6 @@ type userInfo struct {
 	ViewMode       users.ViewMode    `json:"viewMode"`
 	SingleClick    bool              `json:"singleClick"`
 	Perm           users.Permissions `json:"perm"`
-	Commands       []string          `json:"commands"`
 	LockPassword   bool              `json:"lockPassword"`
 	HideDotfiles   bool              `json:"hideDotfiles"`
 	DateFormat     bool              `json:"dateFormat"`
@@ -223,7 +222,6 @@ func printToken(w http.ResponseWriter, _ *http.Request, d *data, user *users.Use
 			SingleClick:    user.SingleClick,
 			Perm:           user.Perm,
 			LockPassword:   user.LockPassword,
-			Commands:       user.Commands,
 			HideDotfiles:   user.HideDotfiles,
 			DateFormat:     user.DateFormat,
 			Username:       user.Username,

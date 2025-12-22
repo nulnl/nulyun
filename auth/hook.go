@@ -166,7 +166,6 @@ func (a *HookAuth) SaveUser() (*users.User, error) {
 			SingleClick:  a.Settings.Defaults.SingleClick,
 			Sorting:      a.Settings.Defaults.Sorting,
 			Perm:         a.Settings.Defaults.Perm,
-			Commands:     a.Settings.Defaults.Commands,
 			HideDotfiles: a.Settings.Defaults.HideDotfiles,
 		}
 		u = a.GetUser(d)
@@ -230,7 +229,6 @@ func (a *HookAuth) GetUser(d *users.User) *users.User {
 			Asc: a.Fields.GetBoolean("user.sorting.asc", d.Sorting.Asc),
 			By:  a.Fields.GetString("user.sorting.by", d.Sorting.By),
 		},
-		Commands:     a.Fields.GetArray("user.commands", d.Commands),
 		HideDotfiles: a.Fields.GetBoolean("user.hideDotfiles", d.HideDotfiles),
 		Perm:         perms,
 		LockPassword: true,
@@ -253,7 +251,6 @@ var validHookFields = []string{
 	"user.singleClick",
 	"user.sorting.by",
 	"user.sorting.asc",
-	"user.commands",
 	"user.hideDotfiles",
 	"user.perm.admin",
 	"user.perm.execute",

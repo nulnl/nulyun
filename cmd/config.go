@@ -225,7 +225,6 @@ func printSettings(ser *settings.Server, set *settings.Settings, auther auth.Aut
 	fmt.Fprintf(w, "\tTLS Cert:\t%s\n", ser.TLSCert)
 	fmt.Fprintf(w, "\tTLS Key:\t%s\n", ser.TLSKey)
 	fmt.Fprintf(w, "\tToken Expiration Time:\t%s\n", ser.TokenExpirationTime)
-	fmt.Fprintf(w, "\tExec Enabled:\t%t\n", ser.EnableExec)
 	fmt.Fprintf(w, "\tThumbnails Enabled:\t%t\n", ser.EnableThumbnails)
 	fmt.Fprintf(w, "\tResize Preview:\t%t\n", ser.ResizePreview)
 	fmt.Fprintf(w, "\tType Detection by Header:\t%t\n", ser.TypeDetectionByHeader)
@@ -242,7 +241,6 @@ func printSettings(ser *settings.Server, set *settings.Settings, auther auth.Aut
 	fmt.Fprintf(w, "\tSingle Click:\t%t\n", set.Defaults.SingleClick)
 	fmt.Fprintf(w, "\tFile Creation Mode:\t%O\n", set.FileMode)
 	fmt.Fprintf(w, "\tDirectory Creation Mode:\t%O\n", set.DirMode)
-	fmt.Fprintf(w, "\tCommands:\t%s\n", strings.Join(set.Defaults.Commands, " "))
 	fmt.Fprintf(w, "\tAce editor syntax highlighting theme:\t%s\n", set.Defaults.AceEditorTheme)
 
 	fmt.Fprintf(w, "\tSorting:\n")
@@ -302,9 +300,6 @@ func getSettings(flags *pflag.FlagSet, set *settings.Settings, ser *settings.Ser
 		case "disablePreviewResize":
 			ser.ResizePreview, err = flags.GetBool(flag.Name)
 			ser.ResizePreview = !ser.ResizePreview
-		case "disableExec":
-			ser.EnableExec, err = flags.GetBool(flag.Name)
-			ser.EnableExec = !ser.EnableExec
 		case "disableTypeDetectionByHeader":
 			ser.TypeDetectionByHeader, err = flags.GetBool(flag.Name)
 			ser.TypeDetectionByHeader = !ser.TypeDetectionByHeader

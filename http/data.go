@@ -8,8 +8,6 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/tomasen/realip"
 
-	"github.com/nulnl/nulyun/rules"
-	"github.com/nulnl/nulyun/runner"
 	settings "github.com/nulnl/nulyun/settings/global"
 	"github.com/nulnl/nulyun/settings/users"
 	"github.com/nulnl/nulyun/storage"
@@ -18,7 +16,6 @@ import (
 type handleFunc func(w http.ResponseWriter, r *http.Request, d *data) (int, error)
 
 type data struct {
-	*runner.Runner
 	settings                    *settings.Settings
 	server                      *settings.Server
 	store                       *storage.Storage
@@ -29,26 +26,9 @@ type data struct {
 	passkeyLoginSessions        map[string]*webauthn.SessionData
 }
 
-// Check implements rules.Checker.
+// Check implements files.Checker.
 func (d *data) Check(path string) bool {
-	if d.user.HideDotfiles && rules.MatchHidden(path) {
-		return false
-	}
-
-	allow := true
-	for _, rule := range d.settings.Rules {
-		if rule.Matches(path) {
-			allow = rule.Allow
-		}
-	}
-
-	for _, rule := range d.user.Rules {
-		if rule.Matches(path) {
-			allow = rule.Allow
-		}
-	}
-
-	return allow
+	return true
 }
 
 func handle(fn handleFunc, prefix string, store *storage.Storage, server *settings.Server) http.Handler {
@@ -64,7 +44,6 @@ func handle(fn handleFunc, prefix string, store *storage.Storage, server *settin
 		}
 
 		status, err := fn(w, r, &data{
-			Runner:                      &runner.Runner{Enabled: server.EnableExec, Settings: settings},
 			store:                       store,
 			settings:                    settings,
 			server:                      server,

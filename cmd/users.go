@@ -128,8 +128,6 @@ func getUserDefaults(flags *pflag.FlagSet, defaults *settings.UserDefaults, all 
 			defaults.Perm.Share, err = flags.GetBool(flag.Name)
 		case "perm.download":
 			defaults.Perm.Download, err = flags.GetBool(flag.Name)
-		case "commands":
-			defaults.Commands, err = flags.GetStringSlice(flag.Name)
 		case "sorting.by":
 			defaults.Sorting.By, err = flags.GetString(flag.Name)
 		case "sorting.asc":

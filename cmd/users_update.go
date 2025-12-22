@@ -58,7 +58,6 @@ options you want to change.`,
 			SingleClick: user.SingleClick,
 			Perm:        user.Perm,
 			Sorting:     user.Sorting,
-			Commands:    user.Commands,
 		}
 
 		err = getUserDefaults(flags, &defaults, false)
@@ -71,7 +70,6 @@ options you want to change.`,
 		user.ViewMode = defaults.ViewMode
 		user.SingleClick = defaults.SingleClick
 		user.Perm = defaults.Perm
-		user.Commands = defaults.Commands
 		user.Sorting = defaults.Sorting
 		user.LockPassword, err = flags.GetBool("lockPassword")
 		if err != nil {

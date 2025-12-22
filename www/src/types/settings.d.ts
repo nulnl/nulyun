@@ -5,11 +5,8 @@ interface ISettings {
   minimumPasswordLength: number;
   userHomeBasePath: string;
   defaults: SettingsDefaults;
-  rules: any[];
   branding: SettingsBranding;
   tus: SettingsTus;
-  shell: string[];
-  commands: SettingsCommand;
 }
 
 interface SettingsDefaults {
@@ -19,7 +16,6 @@ interface SettingsDefaults {
   singleClick: boolean;
   sorting: Sorting;
   perm: Permissions;
-  commands: any[];
   hideDotfiles: boolean;
   dateFormat: boolean;
   aceEditorTheme: string;
@@ -37,24 +33,4 @@ interface SettingsBranding {
 interface SettingsTus {
   chunkSize: number;
   retryCount: number;
-}
-
-interface SettingsCommand {
-  after_copy?: string[];
-  after_delete?: string[];
-  after_rename?: string[];
-  after_save?: string[];
-  after_upload?: string[];
-  before_copy?: string[];
-  before_delete?: string[];
-  before_rename?: string[];
-  before_save?: string[];
-  before_upload?: string[];
-}
-
-interface SettingsUnit {
-  KB: number;
-  MB: number;
-  GB: number;
-  TB: number;
 }

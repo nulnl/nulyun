@@ -24,8 +24,12 @@ import (
 	"github.com/spf13/afero"
 
 	fberrors "github.com/nulnl/nulyun/errors"
-	"github.com/nulnl/nulyun/rules"
 )
+
+// Checker interface
+type Checker interface {
+	Check(path string) bool
+}
 
 var (
 	reSubDirs = regexp.MustCompile("(?i)^sub(s|titles)$")
@@ -61,7 +65,7 @@ type FileOptions struct {
 	Expand     bool
 	ReadHeader bool
 	Token      string
-	Checker    rules.Checker
+	Checker    Checker
 	Content    bool
 }
 
@@ -387,7 +391,7 @@ func (i *FileInfo) addSubtitle(fPath string) {
 	i.Subtitles = append(i.Subtitles, fPath)
 }
 
-func (i *FileInfo) readListing(checker rules.Checker, readHeader bool) error {
+func (i *FileInfo) readListing(checker Checker, readHeader bool) error {
 	afs := &afero.Afero{Fs: i.Fs}
 	dir, err := afs.ReadDir(i.Path)
 	if err != nil {

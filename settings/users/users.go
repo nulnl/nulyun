@@ -7,7 +7,6 @@ import (
 
 	fberrors "github.com/nulnl/nulyun/errors"
 	"github.com/nulnl/nulyun/files"
-	"github.com/nulnl/nulyun/rules"
 )
 
 // ViewMode describes a view mode.
@@ -29,10 +28,8 @@ type User struct {
 	ViewMode       ViewMode      `json:"viewMode"`
 	SingleClick    bool          `json:"singleClick"`
 	Perm           Permissions   `json:"perm"`
-	Commands       []string      `json:"commands"`
 	Sorting        files.Sorting `json:"sorting"`
 	Fs             afero.Fs      `json:"-" yaml:"-"`
-	Rules          []rules.Rule  `json:"rules"`
 	HideDotfiles   bool          `json:"hideDotfiles"`
 	DateFormat     bool          `json:"dateFormat"`
 	AceEditorTheme string        `json:"aceEditorTheme"`
@@ -44,19 +41,12 @@ type User struct {
 	PasskeyEnabled bool          `json:"passkeyEnabled"`
 }
 
-// GetRules implements rules.Provider.
-func (u *User) GetRules() []rules.Rule {
-	return u.Rules
-}
-
 var checkableFields = []string{
 	"Username",
 	"Password",
 	"Scope",
 	"ViewMode",
-	"Commands",
 	"Sorting",
-	"Rules",
 }
 
 // Clean cleans up a user and verifies if all its fields
@@ -80,17 +70,9 @@ func (u *User) Clean(baseScope string, fields ...string) error {
 			if u.ViewMode == "" {
 				u.ViewMode = ListViewMode
 			}
-		case "Commands":
-			if u.Commands == nil {
-				u.Commands = []string{}
-			}
 		case "Sorting":
 			if u.Sorting.By == "" {
 				u.Sorting.By = "name"
-			}
-		case "Rules":
-			if u.Rules == nil {
-				u.Rules = []rules.Rule{}
 			}
 		}
 	}
