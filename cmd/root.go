@@ -107,6 +107,8 @@ func addServerFlags(flags *pflag.FlagSet) {
 	flags.Bool("disableThumbnails", false, "disable image thumbnails")
 	flags.Bool("disablePreviewResize", false, "disable resize of image previews")
 	flags.Bool("disableTypeDetectionByHeader", false, "disables type detection by reading file headers")
+	flags.Bool("disableTOTP", false, "disable TOTP authentication feature")
+	flags.Bool("disablePasskey", false, "disable Passkey/WebAuthn authentication feature")
 }
 
 var rootCmd = &cobra.Command{
@@ -339,6 +341,14 @@ func getServerSettings(v *viper.Viper, st *storage.Storage) (*settings.Server, e
 		server.TypeDetectionByHeader = !v.GetBool("disableTypeDetectionByHeader")
 	}
 
+	if v.IsSet("disableTOTP") {
+		server.EnableTOTP = !v.GetBool("disableTOTP")
+	}
+
+	if v.IsSet("disablePasskey") {
+		server.EnablePasskey = !v.GetBool("disablePasskey")
+	}
+
 	if isAddrSet && isSocketSet {
 		return nil, errors.New("--socket flag cannot be used with --address, --port, --key nor --cert")
 	}
@@ -401,7 +411,7 @@ func quickSetup(v *viper.Viper, s *storage.Storage) error {
 			ChunkSize:  settings.DefaultTusChunkSize,
 			RetryCount: settings.DefaultTusRetryCount,
 		},
-		Shell:    nil,
+		Shell: nil,
 	}
 
 	var err error
@@ -434,6 +444,8 @@ func quickSetup(v *viper.Viper, s *storage.Storage) error {
 		EnableThumbnails:        !v.GetBool("disableThumbnails"),
 		ResizePreview:           !v.GetBool("disablePreviewResize"),
 		TypeDetectionByHeader:   !v.GetBool("disableTypeDetectionByHeader"),
+		EnableTOTP:              !v.GetBool("disableTOTP"),
+		EnablePasskey:           !v.GetBool("disablePasskey"),
 	}
 
 	err = s.Settings.SaveServer(ser)

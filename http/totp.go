@@ -37,6 +37,10 @@ func (e totpExtractor) ExtractToken(r *http.Request) (string, error) {
 
 func verifyTOTPHandler(tokenExpireTime time.Duration) handleFunc {
 	return func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+		if !d.server.EnableTOTP {
+			return http.StatusForbidden, nil
+		}
+
 		code := r.Header.Get("X-TOTP-CODE")
 		if code == "" {
 			return http.StatusUnauthorized, nil

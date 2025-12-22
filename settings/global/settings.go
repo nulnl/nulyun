@@ -19,24 +19,24 @@ type AuthMethod string
 
 // Settings contain the main settings of the application.
 type Settings struct {
-	Key                   []byte              `json:"key"`
-	Signup                bool                `json:"signup"`
-	HideLoginButton       bool                `json:"hideLoginButton"`
-	CreateUserDir         bool                `json:"createUserDir"`
-	UserHomeBasePath      string              `json:"userHomeBasePath"`
-	Defaults              UserDefaults        `json:"defaults"`
-	AuthMethod            AuthMethod          `json:"authMethod"`
-	LogoutPage            string              `json:"logoutPage"`
-	Branding              Branding            `json:"branding"`
-	Tus                   Tus                 `json:"tus"`
-	Shell                 []string            `json:"shell"`
-	MinimumPasswordLength uint                `json:"minimumPasswordLength"`
-	FileMode              fs.FileMode         `json:"fileMode"`
-	DirMode               fs.FileMode         `json:"dirMode"`
-	HideDotfiles          bool                `json:"hideDotfiles"`
-	TOTPEncryptionKey     []byte              `json:"totpEncryptionKey"`
-	TOTPEnabled           bool                `json:"totpEnabled"`
-	PasskeyEnabled        bool                `json:"passkeyEnabled"`
+	Key                   []byte       `json:"key"`
+	Signup                bool         `json:"signup"`
+	HideLoginButton       bool         `json:"hideLoginButton"`
+	CreateUserDir         bool         `json:"createUserDir"`
+	UserHomeBasePath      string       `json:"userHomeBasePath"`
+	Defaults              UserDefaults `json:"defaults"`
+	AuthMethod            AuthMethod   `json:"authMethod"`
+	LogoutPage            string       `json:"logoutPage"`
+	Branding              Branding     `json:"branding"`
+	Tus                   Tus          `json:"tus"`
+	Shell                 []string     `json:"shell"`
+	MinimumPasswordLength uint         `json:"minimumPasswordLength"`
+	FileMode              fs.FileMode  `json:"fileMode"`
+	DirMode               fs.FileMode  `json:"dirMode"`
+	HideDotfiles          bool         `json:"hideDotfiles"`
+	TOTPEncryptionKey     []byte       `json:"totpEncryptionKey"`
+	TOTPEnabled           bool         `json:"totpEnabled"`
+	PasskeyEnabled        bool         `json:"passkeyEnabled"`
 }
 
 // Server specific settings.
@@ -55,6 +55,8 @@ type Server struct {
 	AuthHook                string `json:"authHook"`
 	TokenExpirationTime     string `json:"tokenExpirationTime"`
 	TOTPTokenExpirationTime string `json:"totpTokenExpirationTime"`
+	EnableTOTP              bool   `json:"enableTOTP"`
+	EnablePasskey           bool   `json:"enablePasskey"`
 }
 
 // Clean cleans any variables that might need cleaning.

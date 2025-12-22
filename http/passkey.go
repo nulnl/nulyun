@@ -50,6 +50,11 @@ func (u *WebAuthnUser) WebAuthnIcon() string {
 
 // passkeyListHandler lists all passkeys for the current user
 var passkeyListHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	// Check if passkey is globally enabled
+	if !d.server.EnablePasskey {
+		return http.StatusForbidden, fmt.Errorf("passkey feature is disabled")
+	}
+
 	// Check if passkey is globally enabled and user has passkey enabled
 	if !d.settings.PasskeyEnabled || !d.user.PasskeyEnabled {
 		return http.StatusForbidden, fmt.Errorf("passkey is not enabled")
@@ -83,6 +88,11 @@ var passkeyListHandler = withUser(func(w http.ResponseWriter, r *http.Request, d
 
 // passkeyRegisterBeginHandler begins passkey registration
 var passkeyRegisterBeginHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	// Check if passkey is globally enabled
+	if !d.server.EnablePasskey {
+		return http.StatusForbidden, fmt.Errorf("passkey feature is disabled")
+	}
+
 	// Check if passkey is globally enabled and user has passkey enabled
 	if !d.settings.PasskeyEnabled || !d.user.PasskeyEnabled {
 		return http.StatusForbidden, fmt.Errorf("passkey is not enabled")
@@ -115,6 +125,10 @@ var passkeyRegisterBeginHandler = withUser(func(w http.ResponseWriter, r *http.R
 
 // passkeyRegisterFinishHandler finishes passkey registration
 var passkeyRegisterFinishHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	if !d.server.EnablePasskey {
+		return http.StatusForbidden, fmt.Errorf("passkey feature is disabled")
+	}
+
 	sessionData, ok := d.passkeyRegistrationSessions[d.user.ID]
 	if !ok {
 		return http.StatusBadRequest, fmt.Errorf("no registration session found")
@@ -168,6 +182,10 @@ var passkeyRegisterFinishHandler = withUser(func(w http.ResponseWriter, r *http.
 
 // passkeyDeleteHandler deletes a passkey
 var passkeyDeleteHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	if !d.server.EnablePasskey {
+		return http.StatusForbidden, fmt.Errorf("passkey feature is disabled")
+	}
+
 	vars := mux.Vars(r)
 	id, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -192,6 +210,10 @@ var passkeyDeleteHandler = withUser(func(w http.ResponseWriter, r *http.Request,
 
 // passkeyLoginBeginHandler begins passkey login
 var passkeyLoginBeginHandler = func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	if !d.server.EnablePasskey {
+		return http.StatusForbidden, fmt.Errorf("passkey feature is disabled")
+	}
+
 	options, sessionData, err := d.webAuthn.BeginDiscoverableLogin()
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -212,6 +234,10 @@ var passkeyLoginBeginHandler = func(w http.ResponseWriter, r *http.Request, d *d
 
 // passkeyLoginFinishHandler finishes passkey login
 var passkeyLoginFinishHandler = func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+	if !d.server.EnablePasskey {
+		return http.StatusForbidden, fmt.Errorf("passkey feature is disabled")
+	}
+
 	sessionID := r.Header.Get("X-Passkey-Session-ID")
 	if sessionID == "" {
 		return http.StatusBadRequest, fmt.Errorf("no session ID provided")
