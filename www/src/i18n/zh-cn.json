@@ -230,8 +230,12 @@
     },
     "permissions": "权限",
     "permissionsHelp": "你可以将该用户设置为管理员或单独选择各项权限。如果你选择了“管理员”，则其他的选项会被自动选中，同时该用户可以管理其他用户。\n",
-    "profileSettings": "个人设置",
-    "ruleExample1": "阻止用户访问所有文件夹下任何以 . 开头的文件（隐藏文件, 例如: .git, .gitignore）。\n",
+    "profileSettings": "个人设置",    "read": "读取",
+    "write": "写入",
+    "status": "状态",
+    "active": "激活",
+    "suspended": "暂停",
+    "username": "用户名",    "ruleExample1": "阻止用户访问所有文件夹下任何以 . 开头的文件（隐藏文件, 例如: .git, .gitignore）。\n",
     "ruleExample2": "阻止用户访问其目录范围的根目录下名为 Caddyfile 的文件。",
     "rules": "规则",
     "rulesHelp": "你可以为该用户制定一组黑名单或白名单式的规则，被屏蔽的文件将不会显示在列表中，用户也无权限访问，支持正则表达式和相对于用户范围的路径。\n",
@@ -301,7 +305,12 @@
     "loginInstructions": "使用您的通行密钥登录",
     "featureDisabled": "通行密钥功能已被管理员禁用",
     "passkeyEnabled": "通行密钥已启用",
-    "passkeyDisabled": "通行密钥已禁用"
+    "passkeyDisabled": "通行密钥已禁用",
+    "loginRequired": "请先登录以注册通行密钥",
+    "enterName": "输入通行密钥的名称",
+    "defaultName": "我的通行密钥",
+    "registerFailed": "注册通行密钥失败",
+    "confirmDelete": "确定要删除此通行密钥吗？"
   },
   "webdav": {
     "name": "WebDAV",

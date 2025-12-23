@@ -2,27 +2,27 @@
   <div class="column">
     <form class="card">
       <div class="card-title">
-        <h2>Passkeys</h2>
+        <h2>{{ t('passkey.name') }}</h2>
       </div>
 
       <div class="card-content">
-        <p>Passkeys allow you to sign in without a password using your device's biometric authentication or security key.</p>
+        <p>{{ t('passkey.registerInstructions') }}</p>
         
         <div class="card-action">
           <button type="button" class="button button--flat" @click="registerPasskey" :disabled="!isLoggedIn">
             <i class="material-icons">add</i>
-            <span>Add Passkey</span>
+            <span>{{ t('passkey.add') }}</span>
           </button>
         </div>
 
         <div v-if="passkeys.length > 0" class="passkey-list">
-          <h3>Your Passkeys</h3>
+          <h3>{{ t('passkey.list') }}</h3>
           <table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Created</th>
-                <th>Last Used</th>
+                <th>{{ t('passkey.credentialName') }}</th>
+                <th>{{ t('passkey.createdAt') }}</th>
+                <th>{{ t('passkey.lastUsedAt') }}</th>
                 <th></th>
               </tr>
             </thead>
@@ -45,7 +45,7 @@
             </tbody>
           </table>
         </div>
-        <p v-else class="message">No passkeys registered yet.</p>
+        <p v-else class="message">{{ t('passkey.noPasskeys') }}</p>
       </div>
     </form>
   </div>
@@ -83,13 +83,13 @@ async function loadPasskeys() {
 
 async function registerPasskey() {
   if (!isLoggedIn.value) {
-    $showError("Please log in to register a Passkey");
+    $showError(t('passkey.loginRequired'));
     return;
   }
 
   try {
     // Get name from user
-    const name = prompt("Enter a name for this passkey:", "My Passkey");
+    const name = prompt(t('passkey.enterName'), t('passkey.defaultName'));
     if (!name) return;
 
     // Begin registration
@@ -101,22 +101,22 @@ async function registerPasskey() {
     // Finish registration
     await api.finishRegistration(credential, name);
     
-    $showSuccess("Passkey registered successfully!");
+    $showSuccess(t('passkey.registerSuccess'));
     await loadPasskeys();
   } catch (err: any) {
     console.error("Passkey registration error:", err);
-    $showError(err.message || "Failed to register passkey");
+    $showError(err.message || t('passkey.registerFailed'));
   }
 }
 
 async function deletePasskey(id: number) {
-  if (!confirm("Are you sure you want to delete this passkey?")) {
+  if (!confirm(t('passkey.confirmDelete'))) {
     return;
   }
 
   try {
     await api.deletePasskey(id);
-    $showSuccess("Passkey deleted");
+    $showSuccess(t('passkey.deleteSuccess'));
     await loadPasskeys();
   } catch (err: any) {
     $showError(err);

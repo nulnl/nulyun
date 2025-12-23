@@ -236,6 +236,12 @@
     "permissions": "Permissions",
     "permissionsHelp": "You can set the user to be an administrator or choose the permissions individually. If you select \"Administrator\", all of the other options will be automatically checked. The management of users remains a privilege of an administrator.\n",
     "profileSettings": "Profile Settings",
+    "read": "Read",
+    "write": "Write",
+    "status": "Status",
+    "active": "Active",
+    "suspended": "Suspended",
+    "username": "Username",
     "ruleExample1": "prevents the access to any dotfile (such as .git, .gitignore) in every folder.\n",
     "ruleExample2": "blocks the access to the file named Caddyfile on the root of the scope.",
     "rules": "Rules",
@@ -306,7 +312,12 @@
     "loginInstructions": "Use your passkey to login",
     "featureDisabled": "Passkey feature is disabled by administrator",
     "passkeyEnabled": "Passkey Enabled",
-    "passkeyDisabled": "Passkey Disabled"
+    "passkeyDisabled": "Passkey Disabled",
+    "loginRequired": "Please log in to register a Passkey",
+    "enterName": "Enter a name for this passkey",
+    "defaultName": "My Passkey",
+    "registerFailed": "Failed to register passkey",
+    "confirmDelete": "Are you sure you want to delete this passkey?"
   },
   "webdav": {
     "name": "WebDAV",

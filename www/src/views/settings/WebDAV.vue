@@ -4,7 +4,7 @@
     <div class="column">
       <div class="card">
         <div class="card-title">
-          <h2>WebDAV Token Management</h2>
+          <h2>{{ t('webdav.title') }}</h2>
         </div>
 
         <div class="card-action">
@@ -15,18 +15,18 @@
             :title="t('buttons.new')"
           >
             <i class="material-icons">add</i>
-            <span>Create Token</span>
+            <span>{{ t('webdav.generateToken') }}</span>
           </button>
         </div>
 
         <div class="card-content full" v-if="tokens.length > 0">
           <table>
             <tr>
-              <th>Name</th>
-              <th>Path</th>
-              <th>Permissions</th>
-              <th>Status</th>
-              <th>Created At</th>
+              <th>{{ t('prompts.displayName') }}</th>
+              <th>{{ t('prompts.path') }}</th>
+              <th>{{ t('settings.permissions') }}</th>
+              <th>{{ t('settings.status') }}</th>
+              <th>{{ t('time.createdAt') }}</th>
               <th></th>
             </tr>
 
@@ -34,9 +34,9 @@
               <td>{{ token.name }}</td>
               <td>{{ token.path }}</td>
               <td>
-                <span v-if="token.canRead" class="permission-badge">Read</span>
-                <span v-if="token.canWrite" class="permission-badge">Write</span>
-                <span v-if="token.canDelete" class="permission-badge">Delete</span>
+                <span v-if="token.canRead" class="permission-badge">{{ t('settings.read') }}</span>
+                <span v-if="token.canWrite" class="permission-badge">{{ t('settings.write') }}</span>
+                <span v-if="token.canDelete" class="permission-badge">{{ t('buttons.delete') }}</span>
               </td>
               <td>
                 <span
@@ -45,7 +45,7 @@
                     'status-suspended': token.status === 'suspended',
                   }"
                 >
-                  {{ token.status === "active" ? "Active" : "Suspended" }}
+                  {{ token.status === "active" ? t('settings.active') : t('settings.suspended') }}
                 </span>
               </td>
               <td>{{ formatDate(token.createdAt) }}</td>
@@ -109,23 +109,23 @@
   <div class="dialog" v-if="showCreateDialog || showEditDialog">
     <div class="card">
         <div class="card-title">
-        <h2>{{ showCreateDialog ? "Create WebDAV Token" : "Edit WebDAV Token" }}</h2>
+        <h2>{{ showCreateDialog ? t('webdav.generateToken') : t('buttons.edit') + ' ' + t('webdav.token') }}</h2>
       </div>
       <div class="card-content">
         <form @submit.prevent="submitForm">
           <div class="input-group">
-            <label for="token-name">Name *</label>
+            <label for="token-name">{{ t('prompts.displayName') }} *</label>
             <input
               id="token-name"
               v-model="formData.name"
               type="text"
               required
-              placeholder="Enter token name"
+              :placeholder="t('prompts.displayName')"
             />
           </div>
 
           <div class="input-group">
-            <label for="token-path">Path</label>
+            <label for="token-path">{{ t('prompts.path') }}</label>
             <input
               id="token-path"
               v-model="formData.path"
@@ -135,19 +135,19 @@
           </div>
 
           <div class="input-group">
-            <label>Permissions</label>
+            <label>{{ t('settings.permissions') }}</label>
             <div class="checkbox-group">
               <label>
                 <input type="checkbox" v-model="formData.canRead" />
-                Read
+                {{ t('settings.read') }}
               </label>
               <label>
                 <input type="checkbox" v-model="formData.canWrite" />
-                Write
+                {{ t('settings.write') }}
               </label>
               <label>
                 <input type="checkbox" v-model="formData.canDelete" />
-                Delete
+                {{ t('buttons.delete') }}
               </label>
             </div>
           </div>
@@ -157,7 +157,7 @@
               {{ t("buttons.cancel") }}
             </button>
             <button type="submit" class="button button--flat button--blue">
-              {{ showCreateDialog ? "Create" : "Save" }}
+              {{ showCreateDialog ? t('buttons.create') : t('buttons.save') }}
             </button>
           </div>
         </form>
@@ -170,24 +170,24 @@
   <div class="dialog" v-if="showViewDialog && viewingToken">
     <div class="card">
       <div class="card-title">
-        <h2>Token Details</h2>
+        <h2>{{ t('webdav.token') }}</h2>
       </div>
       <div class="card-content">
         <div class="token-details">
           <div class="detail-item">
-            <strong>Name:</strong>
+            <strong>{{ t('prompts.displayName') }}:</strong>
             <span>{{ viewingToken.name }}</span>
           </div>
           <div class="detail-item">
-            <strong>Username:</strong>
+            <strong>{{ t('settings.username') }}:</strong>
             <span>{{ authStore.user?.username }}</span>
           </div>
           <div class="detail-item">
-            <strong>Path:</strong>
+            <strong>{{ t('prompts.path') }}:</strong>
             <span>{{ viewingToken.path }}</span>
           </div>
           <div class="detail-item">
-            <strong>Token:</strong>
+            <strong>{{ t('webdav.token') }}:</strong>
             <div class="token-display">
               <input
                 type="text"
@@ -201,7 +201,7 @@
             </div>
           </div>
           <div class="detail-item">
-            <strong>WebDAV URL:</strong>
+            <strong>{{ t('webdav.url') }}:</strong>
             <div class="token-display">
               <input
                 type="text"
@@ -214,26 +214,26 @@
             </div>
           </div>
           <div class="detail-item">
-            <strong>Permissions:</strong>
+            <strong>{{ t('settings.permissions') }}:</strong>
             <span>
-              <span v-if="viewingToken.canRead" class="permission-badge">Read</span>
-              <span v-if="viewingToken.canWrite" class="permission-badge">Write</span>
-              <span v-if="viewingToken.canDelete" class="permission-badge">Delete</span>
+              <span v-if="viewingToken.canRead" class="permission-badge">{{ t('settings.read') }}</span>
+              <span v-if="viewingToken.canWrite" class="permission-badge">{{ t('settings.write') }}</span>
+              <span v-if="viewingToken.canDelete" class="permission-badge">{{ t('buttons.delete') }}</span>
             </span>
           </div>
           <div class="detail-item">
-            <strong>Status:</strong>
+            <strong>{{ t('settings.status') }}:</strong>
             <span
               :class="{
                 'status-active': viewingToken.status === 'active',
                 'status-suspended': viewingToken.status === 'suspended',
               }"
             >
-              {{ viewingToken.status === "active" ? "Active" : "Suspended" }}
+              {{ viewingToken.status === "active" ? t('settings.active') : t('settings.suspended') }}
             </span>
           </div>
           <div class="detail-item">
-            <strong>Created At:</strong>
+            <strong>{{ t('time.createdAt') }}:</strong>
             <span>{{ formatDate(viewingToken.createdAt) }}</span>
           </div>
         </div>
@@ -243,7 +243,7 @@
             class="button button--flat"
             @click="showViewDialog = false"
           >
-            Close
+            {{ t('buttons.close') }}
           </button>
         </div>
       </div>

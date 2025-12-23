@@ -404,6 +404,8 @@ func quickSetup(v *viper.Viper, s *storage.Storage) error {
 				Share:    true,
 				Download: true,
 			},
+			TOTPEnabled:    true,
+			PasskeyEnabled: true,
 		},
 		AuthMethod:     "",
 		Branding:       settings.Branding{},

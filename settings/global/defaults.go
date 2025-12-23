@@ -17,6 +17,8 @@ type UserDefaults struct {
 	HideDotfiles   bool              `json:"hideDotfiles"`
 	DateFormat     bool              `json:"dateFormat"`
 	AceEditorTheme string            `json:"aceEditorTheme"`
+	TOTPEnabled    bool              `json:"totpEnabled"`
+	PasskeyEnabled bool              `json:"passkeyEnabled"`
 }
 
 // Apply applies the default options to a user.
@@ -30,4 +32,6 @@ func (d *UserDefaults) Apply(u *users.User) {
 	u.HideDotfiles = d.HideDotfiles
 	u.DateFormat = d.DateFormat
 	u.AceEditorTheme = d.AceEditorTheme
+	u.TOTPEnabled = d.TOTPEnabled
+	u.PasskeyEnabled = d.PasskeyEnabled
 }
