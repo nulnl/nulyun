@@ -13,9 +13,9 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gorilla/mux"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/model/passkey"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 // WebAuthnUser implements the webauthn.User interface

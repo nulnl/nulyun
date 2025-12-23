@@ -18,13 +18,18 @@ export async function listPasskeys(): Promise<PasskeyCredential[]> {
 
 // Begin passkey registration
 export async function beginRegistration(): Promise<any> {
-  const res = await fetchURL("/api/passkeys/register/begin", { method: "POST" });
+  const res = await fetchURL("/api/passkeys/register/begin", {
+    method: "POST",
+  });
   const options = await res.json();
 
   // Normalize PascalCase -> camelCase for @simplewebauthn/browser
   // Older Go struct serializes as { "Response": { ... Challenge, RelyingParty, User } }
   // Map either `PublicKey` or `Response` (PascalCase) to `publicKey` (camelCase) expected by the browser lib.
-  const src = (options as any).PublicKey || (options as any).Response || (options as any).response;
+  const src =
+    (options as any).PublicKey ||
+    (options as any).Response ||
+    (options as any).response;
   if (src) {
     (options as any).publicKey = src;
     delete (options as any).PublicKey;
@@ -45,13 +50,18 @@ export async function beginRegistration(): Promise<any> {
     if (pk.User && !pk.user) pk.user = pk.User;
     if (pk.User && pk.User.ID && !pk.user.id) pk.user.id = pk.User.ID;
 
-    if (pk.Parameters && !pk.pubKeyCredParams) pk.pubKeyCredParams = pk.Parameters;
-    if (pk.PubKeyCredParams && !pk.pubKeyCredParams) pk.pubKeyCredParams = pk.PubKeyCredParams;
+    if (pk.Parameters && !pk.pubKeyCredParams)
+      pk.pubKeyCredParams = pk.Parameters;
+    if (pk.PubKeyCredParams && !pk.pubKeyCredParams)
+      pk.pubKeyCredParams = pk.PubKeyCredParams;
 
-    if (pk.CredentialExcludeList && !pk.excludeCredentials) pk.excludeCredentials = pk.CredentialExcludeList;
-    if (pk.ExcludeCredentials && !pk.excludeCredentials) pk.excludeCredentials = pk.ExcludeCredentials;
+    if (pk.CredentialExcludeList && !pk.excludeCredentials)
+      pk.excludeCredentials = pk.CredentialExcludeList;
+    if (pk.ExcludeCredentials && !pk.excludeCredentials)
+      pk.excludeCredentials = pk.ExcludeCredentials;
 
-    if (pk.AuthenticatorSelection && !pk.authenticatorSelection) pk.authenticatorSelection = pk.AuthenticatorSelection;
+    if (pk.AuthenticatorSelection && !pk.authenticatorSelection)
+      pk.authenticatorSelection = pk.AuthenticatorSelection;
     if (pk.Attestation && !pk.attestation) pk.attestation = pk.Attestation;
     if (pk.Timeout && !pk.timeout) pk.timeout = pk.Timeout;
   }
@@ -78,7 +88,10 @@ export async function deletePasskey(id: number): Promise<void> {
 }
 
 // Begin passkey login
-export async function beginLogin(): Promise<{ options: any; sessionId: string }> {
+export async function beginLogin(): Promise<{
+  options: any;
+  sessionId: string;
+}> {
   const res = await fetch("/api/passkey/login/begin", {
     method: "POST",
     headers: {

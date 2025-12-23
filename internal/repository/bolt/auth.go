@@ -4,8 +4,8 @@ import (
 	"github.com/asdine/storm/v3"
 
 	"github.com/nulnl/nulyun/internal/auth"
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	settings "github.com/nulnl/nulyun/internal/model/global"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 type authBackend struct {

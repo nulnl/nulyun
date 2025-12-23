@@ -57,7 +57,8 @@
       <div v-if="showRecoveryCodes" class="card-content">
         <h3>Recovery Codes</h3>
         <p class="message warning">
-          Save these recovery codes in a safe place. Each code can only be used once.
+          Save these recovery codes in a safe place. Each code can only be used
+          once.
         </p>
         <div class="recovery-codes">
           <div v-for="code in recoveryCodes" :key="code" class="recovery-code">
@@ -83,7 +84,8 @@
 
       <div class="card-content">
         <p class="message" v-if="!otpSetupKey">
-          TOTP has been setup but not yet verified. Please complete the verification to enable two-factor authentication.
+          TOTP has been setup but not yet verified. Please complete the
+          verification to enable two-factor authentication.
         </p>
 
         <div v-if="otpSetupKey" class="card-content">
@@ -119,10 +121,17 @@
         </div>
 
         <div class="card-action">
-          <button v-if="!otpSetupKey" class="button button--flat" @click="showOtpInfo">
+          <button
+            v-if="!otpSetupKey"
+            class="button button--flat"
+            @click="showOtpInfo"
+          >
             View Setup Key
           </button>
-          <button class="button button--flat button--red" @click="cancelOtpSetup">
+          <button
+            class="button button--flat button--red"
+            @click="cancelOtpSetup"
+          >
             Cancel Setup
           </button>
         </div>
@@ -191,7 +200,6 @@
 </template>
 
 <script setup lang="ts">
-import { base32 } from "@scure/base";
 import QrcodeVue from "qrcode.vue";
 import { copy } from "@/utils/clipboard";
 import { useLayoutStore } from "@/stores/layout";
@@ -213,7 +221,6 @@ const otpSetupKey = ref<string>("");
 const otpCode = ref<string>("");
 const showRecoveryCodes = ref<boolean>(false);
 const recoveryCodes = ref<string[]>([]);
-const resetPasswordInput = ref<string>("");
 
 const otpSecretB32 = computed(() => {
   if (!otpSetupKey.value) return "";
@@ -225,7 +232,7 @@ const otpSecretB32 = computed(() => {
 
 const showOtpInfo = async (event: Event) => {
   event.preventDefault();
-  
+
   if (authStore.user === null) {
     return;
   }
@@ -337,8 +344,12 @@ const checkOtpCode = async (event: Event) => {
 
 const cancelOtpSetup = async (event: Event) => {
   event.preventDefault();
-  
-  if (!confirm("Are you sure you want to cancel TOTP setup? You will need to start over.")) {
+
+  if (
+    !confirm(
+      "Are you sure you want to cancel TOTP setup? You will need to start over."
+    )
+  ) {
     return;
   }
 
@@ -372,7 +383,9 @@ const resetOtpKey = async (event: Event) => {
   try {
     const res = await api.resetOtp(authStore.user.id, password);
     otpSetupKey.value = res.setupKey;
-    $showSuccess("TOTP key has been reset. Please reconfigure your authenticator app.");
+    $showSuccess(
+      "TOTP key has been reset. Please reconfigure your authenticator app."
+    );
   } catch (err: any) {
     $showError(err);
   }

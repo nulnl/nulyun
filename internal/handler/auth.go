@@ -13,9 +13,9 @@ import (
 	"github.com/golang-jwt/jwt/v5/request"
 
 	fbAuth "github.com/nulnl/nulyun/internal/auth"
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 const (

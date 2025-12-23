@@ -7,8 +7,8 @@ import (
 
 	"github.com/asdine/storm/v3"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 type usersBackend struct {

@@ -10,7 +10,9 @@
       <input
         v-model.trim="totpCode"
         :class="inputClassObject"
-        :placeholder="isRecoveryCode ? 'XXXX-XXXX-XXXX' : t('otp.codeInputPlaceholder')"
+        :placeholder="
+          isRecoveryCode ? 'XXXX-XXXX-XXXX' : t('otp.codeInputPlaceholder')
+        "
         @keyup.enter="submit"
         id="focus-prompt"
         tabindex="1"
@@ -68,7 +70,7 @@ const isRecoveryCode = computed(() => {
 const submit = async (event: Event) => {
   event.preventDefault();
   event.stopPropagation();
-  
+
   if (isRecoveryCode.value) {
     if (!/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(totpCode.value)) {
       $showError("Invalid recovery code format. Use XXXX-XXXX-XXXX");

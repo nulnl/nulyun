@@ -17,8 +17,8 @@ import (
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/spf13/afero"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/files"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 var resourceGetHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {

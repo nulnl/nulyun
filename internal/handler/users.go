@@ -16,8 +16,8 @@ import (
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 var (

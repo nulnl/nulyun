@@ -41,11 +41,11 @@ The project follows the Go standard project layout:
 ├── bin/                     # Compiled binaries
 │   └── nulyun              # Main binary
 │
-├── go.mod                   # Go 模块定义
-├── go.sum                   # Go 依赖校验和
-├── Makefile                 # 构建脚本
-├── Dockerfile               # Docker 镜像构建
-└── README.md                # 项目说明
+├── go.mod                   # Go module definition
+├── go.sum                   # Go dependency checksums
+├── Makefile                 # Build scripts
+├── Dockerfile               # Docker image build
+└── README.md                # Project documentation
 ```
 
 ### Directory Responsibilities
@@ -116,9 +116,9 @@ www/
 │
 ├── public/                  # Public static files
 ├── dist/                    # Build output (embedded into the Go binary)
-├── package.json             # npm 包配置
-├── vite.config.ts           # Vite 构建配置
-└── tsconfig.json            # TypeScript 配置
+├── package.json             # npm package configuration
+├── vite.config.ts           # Vite build configuration
+└── tsconfig.json            # TypeScript configuration
 ```
 
 ### Frontend Architecture

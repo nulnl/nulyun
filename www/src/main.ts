@@ -1,4 +1,3 @@
-import { disableExternal } from "@/utils/constants";
 import { createApp } from "vue";
 import VueNumberInput from "@chenfengyuan/vue-number-input";
 import VueLazyload from "vue-lazyload";

@@ -11,10 +11,10 @@ import (
 	"slices"
 	"strings"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/files"
 	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 // MethodHookAuth is used to identify hook auth.

@@ -1,8 +1,8 @@
 package settings
 
 import (
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 // StorageBackend is a settings storage backend.

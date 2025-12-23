@@ -2,27 +2,32 @@
   <div class="column">
     <form class="card">
       <div class="card-title">
-        <h2>{{ t('passkey.name') }}</h2>
+        <h2>{{ t("passkey.name") }}</h2>
       </div>
 
       <div class="card-content">
-        <p>{{ t('passkey.registerInstructions') }}</p>
-        
+        <p>{{ t("passkey.registerInstructions") }}</p>
+
         <div class="card-action">
-          <button type="button" class="button button--flat" @click="registerPasskey" :disabled="!isLoggedIn">
+          <button
+            type="button"
+            class="button button--flat"
+            @click="registerPasskey"
+            :disabled="!isLoggedIn"
+          >
             <i class="material-icons">add</i>
-            <span>{{ t('passkey.add') }}</span>
+            <span>{{ t("passkey.add") }}</span>
           </button>
         </div>
 
         <div v-if="passkeys.length > 0" class="passkey-list">
-          <h3>{{ t('passkey.list') }}</h3>
+          <h3>{{ t("passkey.list") }}</h3>
           <table>
             <thead>
               <tr>
-                <th>{{ t('passkey.credentialName') }}</th>
-                <th>{{ t('passkey.createdAt') }}</th>
-                <th>{{ t('passkey.lastUsedAt') }}</th>
+                <th>{{ t("passkey.credentialName") }}</th>
+                <th>{{ t("passkey.createdAt") }}</th>
+                <th>{{ t("passkey.lastUsedAt") }}</th>
                 <th></th>
               </tr>
             </thead>
@@ -45,7 +50,7 @@
             </tbody>
           </table>
         </div>
-        <p v-else class="message">{{ t('passkey.noPasskeys') }}</p>
+        <p v-else class="message">{{ t("passkey.noPasskeys") }}</p>
       </div>
     </form>
   </div>
@@ -83,40 +88,40 @@ async function loadPasskeys() {
 
 async function registerPasskey() {
   if (!isLoggedIn.value) {
-    $showError(t('passkey.loginRequired'));
+    $showError(t("passkey.loginRequired"));
     return;
   }
 
   try {
     // Get name from user
-    const name = prompt(t('passkey.enterName'), t('passkey.defaultName'));
+    const name = prompt(t("passkey.enterName"), t("passkey.defaultName"));
     if (!name) return;
 
     // Begin registration
     const options = await api.beginRegistration();
-    
+
     // Use WebAuthn API to create credential
     const credential = await startRegistration(options.publicKey || options);
-    
+
     // Finish registration
     await api.finishRegistration(credential, name);
-    
-    $showSuccess(t('passkey.registerSuccess'));
+
+    $showSuccess(t("passkey.registerSuccess"));
     await loadPasskeys();
   } catch (err: any) {
     console.error("Passkey registration error:", err);
-    $showError(err.message || t('passkey.registerFailed'));
+    $showError(err.message || t("passkey.registerFailed"));
   }
 }
 
 async function deletePasskey(id: number) {
-  if (!confirm(t('passkey.confirmDelete'))) {
+  if (!confirm(t("passkey.confirmDelete"))) {
     return;
   }
 
   try {
     await api.deletePasskey(id);
-    $showSuccess(t('passkey.deleteSuccess'));
+    $showSuccess(t("passkey.deleteSuccess"));
     await loadPasskeys();
   } catch (err: any) {
     $showError(err);

@@ -14,8 +14,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/model/share"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 func withPermShare(fn handleFunc) handleFunc {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/afero"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	"github.com/nulnl/nulyun/internal/files"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 // ViewMode describes a view mode.

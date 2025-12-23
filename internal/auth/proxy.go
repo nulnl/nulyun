@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/users"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 // MethodProxyAuth is used to identify no auth.
