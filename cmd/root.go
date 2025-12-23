@@ -405,13 +405,15 @@ func quickSetup(v *viper.Viper, s *storage.Storage) error {
 				Download: true,
 			},
 		},
-		AuthMethod: "",
-		Branding:   settings.Branding{},
+		AuthMethod:     "",
+		Branding:       settings.Branding{},
 		Tus: settings.Tus{
 			ChunkSize:  settings.DefaultTusChunkSize,
 			RetryCount: settings.DefaultTusRetryCount,
 		},
-		Shell: nil,
+		Shell:          nil,
+		TOTPEnabled:    true,
+		PasskeyEnabled: true,
 	}
 
 	var err error
