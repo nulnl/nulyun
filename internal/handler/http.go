@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 
 	settings "github.com/nulnl/nulyun/internal/model/global"
-	"github.com/nulnl/nulyun/internal/repository"
+	storage "github.com/nulnl/nulyun/internal/repository"
 )
 
 type modifyRequest struct {

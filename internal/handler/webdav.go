@@ -11,7 +11,7 @@ import (
 	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/webdav"
 	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
-	"github.com/nulnl/nulyun/internal/repository"
+	storage "github.com/nulnl/nulyun/internal/repository"
 )
 
 // webdavTokenListHandler get all WebDAV tokens for the current user

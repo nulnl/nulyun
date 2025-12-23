@@ -15,7 +15,7 @@ import (
 
 	"github.com/nulnl/nulyun/internal/auth"
 	settings "github.com/nulnl/nulyun/internal/model/global"
-	"github.com/nulnl/nulyun/internal/repository"
+	storage "github.com/nulnl/nulyun/internal/repository"
 	"github.com/nulnl/nulyun/internal/version"
 )
 

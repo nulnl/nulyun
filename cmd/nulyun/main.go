@@ -27,7 +27,7 @@ import (
 	fbhttp "github.com/nulnl/nulyun/internal/handler"
 	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/users"
-	"github.com/nulnl/nulyun/internal/repository"
+	storage "github.com/nulnl/nulyun/internal/repository"
 	"github.com/nulnl/nulyun/internal/repository/bolt"
 	"github.com/nulnl/nulyun/www"
 )

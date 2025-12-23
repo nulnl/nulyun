@@ -8,7 +8,7 @@ import (
 	"github.com/nulnl/nulyun/internal/model/share"
 	"github.com/nulnl/nulyun/internal/model/users"
 	"github.com/nulnl/nulyun/internal/model/webdav"
-	"github.com/nulnl/nulyun/internal/repository"
+	storage "github.com/nulnl/nulyun/internal/repository"
 )
 
 // NewStorage creates a storage.Storage based on Bolt DB.

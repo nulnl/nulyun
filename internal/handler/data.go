@@ -10,7 +10,7 @@ import (
 
 	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/users"
-	"github.com/nulnl/nulyun/internal/repository"
+	storage "github.com/nulnl/nulyun/internal/repository"
 )
 
 type handleFunc func(w http.ResponseWriter, r *http.Request, d *data) (int, error)
