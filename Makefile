@@ -1,6 +1,6 @@
 GOBIN?=bin
 BINARY=$(GOBIN)/nulyun
-CMD=.
+CMD=./cmd/nulyun
 FRONTEND_DIR=www
 WWW_DIR=www/dist
 GHCR_OWNER?=$(shell echo $${GITHUB_REPOSITORY_OWNER:-})

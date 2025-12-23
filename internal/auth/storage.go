@@ -1,8 +1,8 @@
 package auth
 
 import (
-	settings "github.com/nulnl/nulyun/internal/settings/global"
-	"github.com/nulnl/nulyun/internal/settings/users"
+	settings "github.com/nulnl/nulyun/internal/model/global"
+	"github.com/nulnl/nulyun/internal/model/users"
 )
 
 // StorageBackend is a storage backend for auth storage.

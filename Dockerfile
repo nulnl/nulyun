@@ -32,7 +32,7 @@ COPY --from=frontend-builder /src/www/dist ./www/dist
 
 # Build with optimizations
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
-    go build -ldflags='-s -w -extldflags "-static"' -trimpath -o /out/nulyun .
+    go build -ldflags='-s -w -extldflags "-static"' -trimpath -o /out/nulyun ./cmd/nulyun
 
 # Final minimal image
 FROM scratch

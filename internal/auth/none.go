@@ -3,8 +3,8 @@ package auth
 import (
 	"net/http"
 
-	settings "github.com/nulnl/nulyun/internal/settings/global"
-	"github.com/nulnl/nulyun/internal/settings/users"
+	settings "github.com/nulnl/nulyun/internal/model/global"
+	"github.com/nulnl/nulyun/internal/model/users"
 )
 
 // MethodNoAuth is used to identify no auth.

@@ -23,7 +23,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	fberrors "github.com/nulnl/nulyun/internal/errors"
+	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
 // Checker interface

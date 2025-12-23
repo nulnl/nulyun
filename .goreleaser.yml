@@ -4,7 +4,7 @@ project_name: nulyun
 
 builds:
   - id: nulyun
-    main: .
+    main: ./cmd/nulyun
     goos:
       - linux
       - darwin
