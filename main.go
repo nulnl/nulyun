@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -32,6 +33,9 @@ import (
 )
 
 var (
+	// Config file
+	configFile = flag.String("config", "", "path to JSON configuration file")
+
 	// Database
 	database = flag.String("database", "./nulyun.db", "database path")
 
@@ -65,8 +69,39 @@ var (
 	imageProcessors = flag.Int("imageProcessors", 4, "image processors count")
 )
 
+// Config represents the JSON configuration file structure
+type Config struct {
+	Database                     string `json:"database,omitempty"`
+	Address                      string `json:"address,omitempty"`
+	Port                         string `json:"port,omitempty"`
+	Cert                         string `json:"cert,omitempty"`
+	Key                          string `json:"key,omitempty"`
+	Root                         string `json:"root,omitempty"`
+	BaseURL                      string `json:"baseURL,omitempty"`
+	Log                          string `json:"log,omitempty"`
+	CacheDir                     string `json:"cacheDir,omitempty"`
+	TokenExpirationTime          string `json:"tokenExpirationTime,omitempty"`
+	TotpTokenExpirationTime      string `json:"totpTokenExpirationTime,omitempty"`
+	DisableThumbnails            *bool  `json:"disableThumbnails,omitempty"`
+	DisablePreviewResize         *bool  `json:"disablePreviewResize,omitempty"`
+	DisableTypeDetectionByHeader *bool  `json:"disableTypeDetectionByHeader,omitempty"`
+	DisableTOTP                  *bool  `json:"disableTOTP,omitempty"`
+	DisablePasskey               *bool  `json:"disablePasskey,omitempty"`
+	Noauth                       *bool  `json:"noauth,omitempty"`
+	Username                     string `json:"username,omitempty"`
+	Password                     string `json:"password,omitempty"`
+	ImageProcessors              *int   `json:"imageProcessors,omitempty"`
+}
+
 func main() {
 	flag.Parse()
+
+	// Load config file if specified
+	if *configFile != "" {
+		if err := loadConfig(*configFile); err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	if err := run(); err != nil {
 		log.Fatal(err)
@@ -210,6 +245,92 @@ func run() error {
 	log.Println("Graceful shutdown complete.")
 
 	return nil
+}
+
+func loadConfig(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("failed to read config file: %w", err)
+	}
+
+	var cfg Config
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return fmt.Errorf("failed to parse config file: %w", err)
+	}
+
+	// Apply config values only if not already set by flags
+	if cfg.Database != "" && !isFlagSet("database") {
+		*database = cfg.Database
+	}
+	if cfg.Address != "" && !isFlagSet("address") {
+		*address = cfg.Address
+	}
+	if cfg.Port != "" && !isFlagSet("port") {
+		*port = cfg.Port
+	}
+	if cfg.Cert != "" && !isFlagSet("cert") {
+		*cert = cfg.Cert
+	}
+	if cfg.Key != "" && !isFlagSet("key") {
+		*key = cfg.Key
+	}
+	if cfg.Root != "" && !isFlagSet("root") {
+		*root = cfg.Root
+	}
+	if cfg.BaseURL != "" && !isFlagSet("baseURL") {
+		*baseURL = cfg.BaseURL
+	}
+	if cfg.Log != "" && !isFlagSet("log") {
+		*logPath = cfg.Log
+	}
+	if cfg.CacheDir != "" && !isFlagSet("cacheDir") {
+		*cacheDir = cfg.CacheDir
+	}
+	if cfg.TokenExpirationTime != "" && !isFlagSet("tokenExpirationTime") {
+		*tokenExpirationTime = cfg.TokenExpirationTime
+	}
+	if cfg.TotpTokenExpirationTime != "" && !isFlagSet("totpTokenExpirationTime") {
+		*totpTokenExpirationTime = cfg.TotpTokenExpirationTime
+	}
+	if cfg.DisableThumbnails != nil && !isFlagSet("disableThumbnails") {
+		*disableThumbnails = *cfg.DisableThumbnails
+	}
+	if cfg.DisablePreviewResize != nil && !isFlagSet("disablePreviewResize") {
+		*disablePreviewResize = *cfg.DisablePreviewResize
+	}
+	if cfg.DisableTypeDetectionByHeader != nil && !isFlagSet("disableTypeDetectionByHeader") {
+		*disableTypeDetectionByHeader = *cfg.DisableTypeDetectionByHeader
+	}
+	if cfg.DisableTOTP != nil && !isFlagSet("disableTOTP") {
+		*disableTOTP = *cfg.DisableTOTP
+	}
+	if cfg.DisablePasskey != nil && !isFlagSet("disablePasskey") {
+		*disablePasskey = *cfg.DisablePasskey
+	}
+	if cfg.Noauth != nil && !isFlagSet("noauth") {
+		*noauth = *cfg.Noauth
+	}
+	if cfg.Username != "" && !isFlagSet("username") {
+		*username = cfg.Username
+	}
+	if cfg.Password != "" && !isFlagSet("password") {
+		*password = cfg.Password
+	}
+	if cfg.ImageProcessors != nil && !isFlagSet("imageProcessors") {
+		*imageProcessors = *cfg.ImageProcessors
+	}
+
+	return nil
+}
+
+func isFlagSet(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
 
 func dbExists(path string) (bool, error) {

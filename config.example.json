@@ -1,0 +1,20 @@
+{
+  "database": "./nulyun.db",
+  "address": "127.0.0.1",
+  "port": "8080",
+  "root": ".",
+  "baseURL": "",
+  "log": "stdout",
+  "cacheDir": "",
+  "tokenExpirationTime": "2h",
+  "totpTokenExpirationTime": "2m",
+  "disableThumbnails": false,
+  "disablePreviewResize": false,
+  "disableTypeDetectionByHeader": false,
+  "disableTOTP": false,
+  "disablePasskey": false,
+  "noauth": false,
+  "username": "admin",
+  "password": "",
+  "imageProcessors": 4
+}
