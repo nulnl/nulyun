@@ -6,7 +6,7 @@ WWW_DIR=www/dist
 GHCR_OWNER?=$(shell echo $${GITHUB_REPOSITORY_OWNER:-})
 TAG?=$(shell git describe --tags --abbrev=0 2>/dev/null || echo "dev")
 
-.PHONY: help all build build-backend build-frontend test fmt vet clean install-deps release
+.PHONY: help all build build-backend build-frontend test fmt vet lint clean install-deps release
 
 # Default target: build frontend and backend
 all: build
@@ -21,6 +21,7 @@ help:
 	@echo "  test                Run Go tests"
 	@echo "  fmt                 Format Go code"
 	@echo "  vet                 Run go vet"
+	@echo "  lint                Run golangci-lint"
 	@echo "  install-deps        Download Go dependencies"
 	@echo "  release             Run goreleaser"
 	@echo "  clean               Remove build artifacts"
@@ -48,6 +49,11 @@ fmt:
 vet:
 	@echo "Running go vet..."
 	@go vet ./...
+
+# Lint with golangci-lint
+lint:
+	@echo "Running golangci-lint..."
+	@golangci-lint run ./...
 
 # Backend dependencies
 install-deps:
