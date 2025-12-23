@@ -22,13 +22,13 @@ import (
 	"github.com/spf13/afero"
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
 
-	"github.com/nulnl/nulyun/auth"
-	"github.com/nulnl/nulyun/files"
-	fbhttp "github.com/nulnl/nulyun/http"
-	settings "github.com/nulnl/nulyun/settings/global"
-	"github.com/nulnl/nulyun/settings/users"
-	"github.com/nulnl/nulyun/storage"
-	"github.com/nulnl/nulyun/storage/bolt"
+	"github.com/nulnl/nulyun/internal/auth"
+	"github.com/nulnl/nulyun/internal/files"
+	fbhttp "github.com/nulnl/nulyun/internal/http"
+	settings "github.com/nulnl/nulyun/internal/settings/global"
+	"github.com/nulnl/nulyun/internal/settings/users"
+	"github.com/nulnl/nulyun/internal/storage"
+	"github.com/nulnl/nulyun/internal/storage/bolt"
 	"github.com/nulnl/nulyun/www"
 )
 
