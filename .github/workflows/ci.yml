@@ -3,64 +3,36 @@ name: CI
 on:
   push:
     branches: [ main, master ]
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - '.github/**'
-      - '.goreleaser.yml'
-      - 'Dockerfile*'
   pull_request:
     branches: [ main, master ]
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - '.github/**'
-      - '.goreleaser.yml'
-      - 'Dockerfile*'
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.19'
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: www/pnpm-lock.yaml
 
       - name: Enable corepack
         run: corepack enable
 
-      - name: Install frontend dependencies
-        working-directory: www
-        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: make build
 
-      - name: Build frontend
-        working-directory: www
-        run: pnpm run build
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version-file: go.mod
-
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/.cache/gopath/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-      - name: Format check
-        run: gofmt -l .
-
-      - name: Build backend
-        run: go build -v -o nulyun .
-
-      - name: Run tests
-        run: go test ./... -v
+      - name: Test
+        run: make test
 
       - name: Vet
-        run: go vet ./...
+        run: make vet
