@@ -38,7 +38,6 @@ var (
 	// Server flags
 	address  = flag.String("address", "127.0.0.1", "address to listen on")
 	port     = flag.String("port", "8080", "port to listen on")
-	socket   = flag.String("socket", "", "socket to listen to (cannot be used with address, port, cert nor key flags)")
 	cert     = flag.String("cert", "", "tls certificate")
 	key      = flag.String("key", "", "tls key")
 	root     = flag.String("root", ".", "root to prepend to relative paths")
@@ -63,7 +62,6 @@ var (
 	password = flag.String("password", "", "hashed password for the first user when using quick setup")
 
 	// Other
-	socketPerm      = flag.Uint("socketPerm", 0666, "unix socket file permissions")
 	imageProcessors = flag.Int("imageProcessors", 4, "image processors count")
 )
 
@@ -144,14 +142,6 @@ func run() error {
 	var listener net.Listener
 
 	switch {
-	case server.Socket != "":
-		listener, err = net.Listen("unix", server.Socket)
-		if err != nil {
-			return err
-		}
-		if err = os.Chmod(server.Socket, os.FileMode(*socketPerm)); err != nil {
-			return err
-		}
 	case server.TLSKey != "" && server.TLSCert != "":
 		cer, err := tls.LoadX509KeyPair(server.TLSCert, server.TLSKey)
 		if err != nil {
@@ -251,7 +241,6 @@ func getServerSettings(st *storage.Storage) (*settings.Server, error) {
 	// Apply flag values
 	server.Address = *address
 	server.Port = *port
-	server.Socket = *socket
 	server.TLSCert = *cert
 	server.TLSKey = *key
 	server.Root = *root
@@ -264,11 +253,6 @@ func getServerSettings(st *storage.Storage) (*settings.Server, error) {
 	server.TypeDetectionByHeader = !*disableTypeDetectionByHeader
 	server.EnableTOTP = !*disableTOTP
 	server.EnablePasskey = !*disablePasskey
-
-	// Validate socket vs address flags
-	if *socket != "" && (*address != "127.0.0.1" || *port != "8080" || *cert != "" || *key != "") {
-		return nil, errors.New("--socket flag cannot be used with --address, --port, --key nor --cert")
-	}
 
 	return server, nil
 }
