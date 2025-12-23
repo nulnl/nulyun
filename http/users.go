@@ -235,10 +235,6 @@ var userPutHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request
 })
 
 var userEnableTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnableTOTP {
-		return http.StatusForbidden, fmt.Errorf("TOTP feature is disabled")
-	}
-
 	if r.Body == nil {
 		return http.StatusBadRequest, fberrors.ErrEmptyRequest
 	}
@@ -278,10 +274,6 @@ var userEnableTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request
 })
 
 var userGetTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnableTOTP {
-		return http.StatusForbidden, fmt.Errorf("TOTP feature is disabled")
-	}
-
 	if d.user.TOTPSecret == "" {
 		return http.StatusForbidden, fmt.Errorf("user does not enable the TOTP verification")
 	}
@@ -321,10 +313,6 @@ var userGetTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d
 })
 
 var userDisableTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnableTOTP {
-		return http.StatusForbidden, fmt.Errorf("TOTP feature is disabled")
-	}
-
 	if d.user.TOTPSecret == "" {
 		return http.StatusOK, nil
 	}
@@ -355,10 +343,6 @@ var userDisableTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Reques
 })
 
 var userCheckTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnableTOTP {
-		return http.StatusForbidden, fmt.Errorf("TOTP feature is disabled")
-	}
-
 	if d.user.TOTPSecret == "" {
 		return http.StatusForbidden, nil
 	}
@@ -388,10 +372,6 @@ var userCheckTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request,
 
 // userResetTOTPHandler resets TOTP secret for a user (self or admin)
 var userResetTOTPHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnableTOTP {
-		return http.StatusForbidden, fmt.Errorf("TOTP feature is disabled")
-	}
-
 	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -448,10 +428,6 @@ type recoveryCodesResponse struct {
 
 // userGenerateRecoveryCodesHandler generates new recovery codes for a user
 var userGenerateRecoveryCodesHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnableTOTP {
-		return http.StatusForbidden, fmt.Errorf("TOTP feature is disabled")
-	}
-
 	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
 	if err != nil {
 		return http.StatusInternalServerError, err
