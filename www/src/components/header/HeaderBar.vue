@@ -1,5 +1,6 @@
 <template>
   <header>
+    <img v-if="showLogo" :src="logoURL" />
     <Action
       v-if="showMenu"
       class="menu-button"

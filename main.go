@@ -51,11 +51,11 @@ var (
 	totpTokenExpirationTime = flag.String("totpTokenExpirationTime", "2m", "user totp session timeout to login")
 
 	// Feature flags
-	disableThumbnails              = flag.Bool("disableThumbnails", false, "disable image thumbnails")
-	disablePreviewResize           = flag.Bool("disablePreviewResize", false, "disable resize of image previews")
-	disableTypeDetectionByHeader   = flag.Bool("disableTypeDetectionByHeader", false, "disables type detection by reading file headers")
-	disableTOTP                    = flag.Bool("disableTOTP", false, "disable TOTP authentication feature")
-	disablePasskey                 = flag.Bool("disablePasskey", false, "disable Passkey/WebAuthn authentication feature")
+	disableThumbnails            = flag.Bool("disableThumbnails", false, "disable image thumbnails")
+	disablePreviewResize         = flag.Bool("disablePreviewResize", false, "disable resize of image previews")
+	disableTypeDetectionByHeader = flag.Bool("disableTypeDetectionByHeader", false, "disables type detection by reading file headers")
+	disableTOTP                  = flag.Bool("disableTOTP", false, "disable TOTP authentication feature")
+	disablePasskey               = flag.Bool("disablePasskey", false, "disable Passkey/WebAuthn authentication feature")
 
 	// Quick setup flags
 	noauth   = flag.Bool("noauth", false, "use the noauth auther when using quick setup")
@@ -63,8 +63,8 @@ var (
 	password = flag.String("password", "", "hashed password for the first user when using quick setup")
 
 	// Other
-	socketPerm       = flag.Uint("socketPerm", 0666, "unix socket file permissions")
-	imageProcessors  = flag.Int("imageProcessors", 4, "image processors count")
+	socketPerm      = flag.Uint("socketPerm", 0666, "unix socket file permissions")
+	imageProcessors = flag.Int("imageProcessors", 4, "image processors count")
 )
 
 func main() {
@@ -302,9 +302,9 @@ func quickSetup(st *storage.Storage) error {
 		MinimumPasswordLength: settings.DefaultMinimumPasswordLength,
 		UserHomeBasePath:      settings.DefaultUsersHomeBasePath,
 		Defaults: settings.UserDefaults{
-			Scope:          ".",
-			Locale:         "en",
-			SingleClick:    false,
+			Scope:       ".",
+			Locale:      "en",
+			SingleClick: false,
 			Perm: users.Permissions{
 				Admin:    false,
 				Execute:  true,
