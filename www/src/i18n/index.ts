@@ -1,33 +1,15 @@
 import dayjs from "dayjs";
 import { createI18n } from "vue-i18n";
 
-import("dayjs/locale/ar");
-import("dayjs/locale/bg");
-import("dayjs/locale/cs");
 import("dayjs/locale/de");
-import("dayjs/locale/el");
 import("dayjs/locale/en");
 import("dayjs/locale/es");
 import("dayjs/locale/fr");
-import("dayjs/locale/he");
-import("dayjs/locale/hr");
-import("dayjs/locale/hu");
-import("dayjs/locale/is");
 import("dayjs/locale/it");
 import("dayjs/locale/ja");
 import("dayjs/locale/ko");
-import("dayjs/locale/nb");
-import("dayjs/locale/nl-be");
-import("dayjs/locale/pl");
 import("dayjs/locale/pt-br");
-import("dayjs/locale/pt");
-import("dayjs/locale/ro");
 import("dayjs/locale/ru");
-import("dayjs/locale/sk");
-import("dayjs/locale/sv");
-import("dayjs/locale/tr");
-import("dayjs/locale/uk");
-import("dayjs/locale/vi");
 import("dayjs/locale/zh-cn");
 import("dayjs/locale/zh-tw");
 
@@ -40,29 +22,11 @@ export function detectLocale() {
   // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/language
   let locale = navigator.language.toLowerCase();
   switch (true) {
-    case /^he\b/.test(locale):
-      locale = "he";
-      break;
-    case /^hr\b/.test(locale):
-      locale = "hr";
-      break;
-    case /^hu\b/.test(locale):
-      locale = "hu";
-      break;
-    case /^ar\b/.test(locale):
-      locale = "ar";
-      break;
-    case /^el.*/i.test(locale):
-      locale = "el";
-      break;
     case /^es\b/.test(locale):
       locale = "es";
       break;
     case /^en\b/.test(locale):
       locale = "en";
-      break;
-    case /^is\b/.test(locale):
-      locale = "is";
       break;
     case /^it\b/.test(locale):
       locale = "it";
@@ -72,9 +36,6 @@ export function detectLocale() {
       break;
     case /^pt-br\b/.test(locale):
       locale = "pt-br";
-      break;
-    case /^pt\b/.test(locale):
-      locale = "pt";
       break;
     case /^ja\b/.test(locale):
       locale = "ja";
@@ -89,44 +50,11 @@ export function detectLocale() {
     case /^de\b/.test(locale):
       locale = "de";
       break;
-    case /^ro\b/.test(locale):
-      locale = "ro";
-      break;
     case /^ru\b/.test(locale):
       locale = "ru";
       break;
-    case /^pl\b/.test(locale):
-      locale = "pl";
-      break;
     case /^ko\b/.test(locale):
       locale = "ko";
-      break;
-    case /^sk\b/.test(locale):
-      locale = "sk";
-      break;
-    case /^tr\b/.test(locale):
-      locale = "tr";
-      break;
-    case /^uk\b/.test(locale):
-      locale = "uk";
-      break;
-
-    case /^vi\b/.test(locale):
-      locale = "vi";
-      break;
-    case /^sv-se\b/.test(locale):
-    case /^sv\b/.test(locale):
-      locale = "sv";
-      break;
-    case /^nl-be\b/.test(locale):
-      locale = "nl-be";
-      break;
-    case /^nb\b/.test(locale):
-    case /^no\b/.test(locale):
-      locale = "no";
-      break;
-    case /^bg\b/.test(locale):
-      locale = "bg";
       break;
     default:
       locale = "en";
@@ -148,7 +76,7 @@ export function detectLocale() {
 //     );
 // }
 
-export const rtlLanguages = ["he", "ar"];
+export const rtlLanguages: string[] = [];
 
 export const i18n = createI18n({
   locale: detectLocale(),

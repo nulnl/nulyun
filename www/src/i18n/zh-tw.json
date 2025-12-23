@@ -293,7 +293,7 @@
     "deleted": "通行金鑰已刪除！",
     "registered": "通行金鑰已註冊！",
     "credentialName": "憑證名稱",
-    "credentialNameHelp": "輸入此通行金鑰的名稱（例如"我的指紋"、"我的硬體金鑰"）",
+    "credentialNameHelp": "輸入此通行金鑰的名稱（例如\"我的指紋\"、\"我的硬體金鑰\"）",
     "registrationFailed": "通行金鑰註冊失敗",
     "title": "通行金鑰",
     "description": "通行金鑰是一種使用您的裝置生物特徵識別或硬體安全金鑰來驗證身分的安全方式。",
