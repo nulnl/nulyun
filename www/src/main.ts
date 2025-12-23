@@ -86,16 +86,13 @@ app.provide("$showSuccess", (message: string) => {
   );
 });
 
-app.provide("$showError", (error: Error | string, displayReport = true) => {
+app.provide("$showError", (error: Error | string) => {
   const $toast = useToast();
   $toast.error(
     {
       component: CustomToast,
       props: {
         message: (error as Error).message || error,
-        isReport: !disableExternal && displayReport,
-        // TODO: could you add this to the component itself?
-        reportText: i18n.global.t("buttons.reportIssue"),
       },
     },
     {
