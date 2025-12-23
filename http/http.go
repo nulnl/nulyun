@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"sync"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gorilla/mux"
@@ -22,7 +21,6 @@ var (
 	globalWebAuthn                    *webauthn.WebAuthn
 	globalPasskeyRegistrationSessions = make(map[uint]*webauthn.SessionData)
 	globalPasskeyLoginSessions        = make(map[string]*webauthn.SessionData)
-	sessionMutex                      sync.RWMutex
 )
 
 func NewHandler(

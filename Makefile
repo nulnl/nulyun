@@ -53,6 +53,7 @@ vet:
 # Lint with golangci-lint
 lint:
 	@echo "Running golangci-lint..."
+	@command -v golangci-lint >/dev/null 2>&1 || { echo "golangci-lint not found in PATH. Install it from https://golangci-lint.run/usage/install/"; exit 1; }
 	@golangci-lint run ./...
 
 # Backend dependencies

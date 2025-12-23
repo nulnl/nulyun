@@ -62,8 +62,8 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		FileSystem: webdav.Dir(rootPath),
 		LockSystem: webdav.NewMemLS(),
 		Logger: func(r *http.Request, err error) {
-			if err != nil {
-			}
+			// Log errors if needed
+			_ = err
 		},
 	}
 	handler.ServeHTTP(w, r)
@@ -95,7 +95,6 @@ func (h *Handler) checkPermission(token *Token, method string) bool {
 
 type FileInfo struct {
 	os.FileInfo
-	path string
 }
 
 type contextKey string

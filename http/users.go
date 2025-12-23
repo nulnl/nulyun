@@ -308,6 +308,9 @@ var userGetTOTPHandler = withUser(func(w http.ResponseWriter, r *http.Request, d
 
 	ops := totp.GenerateOpts{AccountName: d.user.Username, Issuer: TOTPIssuer, Secret: decoded}
 	key, err := totp.Generate(ops)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
 
 	return renderJSON(w, r, getTOTPInfoResponse{SetupKey: key.URL()})
 })
