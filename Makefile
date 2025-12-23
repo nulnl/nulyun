@@ -33,7 +33,7 @@ build: build-frontend build-backend
 build-backend:
 	@mkdir -p $(GOBIN)
 	@echo "Building backend..."
-	@go build -v -o $(BINARY) $(CMD)
+	@go build -v -ldflags="-s -w" -trimpath -o $(BINARY) $(CMD)
 
 # Backend test
 test:
