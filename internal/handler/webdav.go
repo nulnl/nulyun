@@ -237,11 +237,3 @@ func setupWebDAVRoutes(api *mux.Router, store *storage.Storage, server *settings
 	webdavAPI.Handle("/{id:[0-9]+}/suspend", monkey(webdavTokenSuspendHandler, "")).Methods("POST")
 	webdavAPI.Handle("/{id:[0-9]+}/activate", monkey(webdavTokenActivateHandler, "")).Methods("POST")
 }
-
-// setupWebDAVHandler set up the WebDAV file access handler
-// Note: This function is no longer used as WebDAV is handled in http.go wrapper
-func setupWebDAVHandler(r *mux.Router, store *storage.Storage) {
-	// WebDAV file access (no authentication middleware needed because token auth is used)
-	handler := webdav.NewHandler(store.WebDAV, store.Users, "")
-	r.PathPrefix("/dav/").Handler(handler)
-}

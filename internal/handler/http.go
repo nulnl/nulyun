@@ -138,7 +138,7 @@ func NewHandler(
 
 	// WebDAV routes
 	setupWebDAVRoutes(api, store, server)
-	
+
 	// Create a wrapper handler that processes WebDAV separately
 	// WebDAV needs to see the full path including BaseURL for correct response generation
 	wrapper := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
