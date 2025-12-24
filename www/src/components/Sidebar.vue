@@ -34,10 +34,11 @@
         </button>
       </div>
 
-      <div v-if="user.perm.admin">
+      <!-- Settings button for all logged-in users, navigate to profile settings by default -->
+      <div>
         <button
           class="action"
-          @click="toGlobalSettings"
+          @click="toAccountSettings"
           :aria-label="$t('sidebar.settings')"
           :title="$t('sidebar.settings')"
         >
