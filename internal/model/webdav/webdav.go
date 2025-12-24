@@ -9,6 +9,7 @@ import (
 
 	"golang.org/x/net/webdav"
 
+	settings "github.com/nulnl/nulyun/internal/model/global"
 	"github.com/nulnl/nulyun/internal/model/users"
 )
 
@@ -17,14 +18,16 @@ type Handler struct {
 	storage *Storage
 	users   users.Store
 	baseURL string
+	server  *settings.Server
 }
 
 // NewHandler creates a new WebDAV handler
-func NewHandler(storage *Storage, userStore users.Store, baseURL string) *Handler {
+func NewHandler(storage *Storage, userStore users.Store, server *settings.Server) *Handler {
 	return &Handler{
 		storage: storage,
 		users:   userStore,
-		baseURL: strings.TrimSuffix(baseURL, "/"),
+		baseURL: strings.TrimSuffix(server.BaseURL, "/"),
+		server:  server,
 	}
 }
 
@@ -35,7 +38,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	user, err := h.users.Get("", username)
+	user, err := h.users.Get(h.server.Root, username)
 	if err != nil {
 		http.Error(w, "User not found", http.StatusUnauthorized)
 		return
@@ -49,23 +52,25 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Token is suspended", http.StatusForbidden)
 		return
 	}
-	rootPath := filepath.Join(user.Scope, token.Path)
-	if _, err := os.Stat(rootPath); os.IsNotExist(err) {
-		http.Error(w, "Path not found", http.StatusNotFound)
-		return
-	}
-	method := r.Method
-	if !h.checkPermission(token, method) {
-		http.Error(w, "Permission denied", http.StatusForbidden)
+
+	// Calculate the actual filesystem path
+	// user.Scope is the relative path from the database
+	// We need to join it with server.Root to get the full path
+	userFullScope := filepath.Join(h.server.Root, filepath.Join("/", user.Scope))
+
+	// Verify the path exists
+	if _, err := os.Stat(userFullScope); os.IsNotExist(err) {
+		http.Error(w, "User scope not found", http.StatusNotFound)
 		return
 	}
 
 	// Create WebDAV handler with golang.org/x/net/webdav
 	// Prefix must include BaseURL so responses contain correct paths
+	// Use the calculated full scope path
 	mountPath := h.baseURL + "/dav"
 	handler := &webdav.Handler{
 		Prefix:     mountPath,
-		FileSystem: webdav.Dir(rootPath),
+		FileSystem: webdav.Dir(userFullScope),
 		LockSystem: webdav.NewMemLS(),
 	}
 
@@ -81,19 +86,6 @@ func extractToken(r *http.Request) (string, string) {
 		return strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])
 	}
 	return r.URL.Query().Get("username"), r.URL.Query().Get("token")
-}
-
-func (h *Handler) checkPermission(token *Token, method string) bool {
-	switch method {
-	case "GET", "HEAD", "OPTIONS", "PROPFIND":
-		return token.CanRead
-	case "PUT", "POST", "PATCH", "MKCOL", "COPY", "MOVE":
-		return token.CanWrite
-	case "DELETE":
-		return token.CanDelete
-	default:
-		return false
-	}
 }
 
 type FileInfo struct {

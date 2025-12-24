@@ -146,7 +146,7 @@ func NewHandler(
 		davPath := server.BaseURL + "/dav/"
 		if strings.HasPrefix(req.URL.Path, davPath) {
 			// Handle WebDAV directly without stripPrefix
-			webdavHandler := webdav.NewHandler(store.WebDAV, store.Users, server.BaseURL)
+			webdavHandler := webdav.NewHandler(store.WebDAV, store.Users, server)
 			webdavHandler.ServeHTTP(w, req)
 			return
 		}
