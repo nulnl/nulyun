@@ -16,13 +16,15 @@ import (
 type Handler struct {
 	storage *Storage
 	users   users.Store
+	baseURL string
 }
 
 // NewHandler creates a new WebDAV handler
-func NewHandler(storage *Storage, userStore users.Store) *Handler {
+func NewHandler(storage *Storage, userStore users.Store, baseURL string) *Handler {
 	return &Handler{
 		storage: storage,
 		users:   userStore,
+		baseURL: strings.TrimSuffix(baseURL, "/"),
 	}
 }
 
@@ -57,15 +59,16 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Permission denied", http.StatusForbidden)
 		return
 	}
+
+	// Create WebDAV handler with golang.org/x/net/webdav
+	// Prefix must include BaseURL so responses contain correct paths
+	mountPath := h.baseURL + "/dav"
 	handler := &webdav.Handler{
-		Prefix:     "/dav",
+		Prefix:     mountPath,
 		FileSystem: webdav.Dir(rootPath),
 		LockSystem: webdav.NewMemLS(),
-		Logger: func(r *http.Request, err error) {
-			// Log errors if needed
-			_ = err
-		},
 	}
+
 	handler.ServeHTTP(w, r)
 }
 

@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"strings"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gorilla/mux"
 
 	settings "github.com/nulnl/nulyun/internal/model/global"
+	"github.com/nulnl/nulyun/internal/model/webdav"
 	storage "github.com/nulnl/nulyun/internal/repository"
 )
 
@@ -136,7 +138,21 @@ func NewHandler(
 
 	// WebDAV routes
 	setupWebDAVRoutes(api, store, server)
-	setupWebDAVHandler(r, store)
+	
+	// Create a wrapper handler that processes WebDAV separately
+	// WebDAV needs to see the full path including BaseURL for correct response generation
+	wrapper := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		// Check if this is a WebDAV request (including BaseURL)
+		davPath := server.BaseURL + "/dav/"
+		if strings.HasPrefix(req.URL.Path, davPath) {
+			// Handle WebDAV directly without stripPrefix
+			webdavHandler := webdav.NewHandler(store.WebDAV, store.Users, server.BaseURL)
+			webdavHandler.ServeHTTP(w, req)
+			return
+		}
+		// For all other routes, apply stripPrefix
+		stripPrefix(server.BaseURL, r).ServeHTTP(w, req)
+	})
 
-	return stripPrefix(server.BaseURL, r), nil
+	return wrapper, nil
 }
