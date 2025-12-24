@@ -58,19 +58,24 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// We need to join it with server.Root to get the full path
 	userFullScope := filepath.Join(h.server.Root, filepath.Join("/", user.Scope))
 
+	// Apply token's path restriction if specified
+	// token.Path is relative to the user's scope
+	tokenPath := filepath.Join("/", token.Path)
+	webdavRoot := filepath.Join(userFullScope, tokenPath)
+
 	// Verify the path exists
-	if _, err := os.Stat(userFullScope); os.IsNotExist(err) {
-		http.Error(w, "User scope not found", http.StatusNotFound)
+	if _, err := os.Stat(webdavRoot); os.IsNotExist(err) {
+		http.Error(w, "Path not found", http.StatusNotFound)
 		return
 	}
 
 	// Create WebDAV handler with golang.org/x/net/webdav
 	// Prefix must include BaseURL so responses contain correct paths
-	// Use the calculated full scope path
+	// Use the token's restricted path
 	mountPath := h.baseURL + "/dav"
 	handler := &webdav.Handler{
 		Prefix:     mountPath,
-		FileSystem: webdav.Dir(userFullScope),
+		FileSystem: webdav.Dir(webdavRoot),
 		LockSystem: webdav.NewMemLS(),
 	}
 
