@@ -60,7 +60,10 @@
     "forbidden": "你无权限访问",
     "internal": "服务器出了点问题。",
     "notFound": "找不到文件。",
-    "connection": "无法连接到服务器。"
+    "connection": "无法连接到服务器。",
+    "quotaExceeded": "存储配额已超出。请删除一些文件或联系管理员。",
+    "quotaExceededDuringUpload": "上传已停止：存储配额已超出。已删除部分上传的文件。",
+    "insufficientSpace": "没有足够的存储空间用于此次上传。"
   },
   "files": {
     "body": "内容",
@@ -230,12 +233,14 @@
     },
     "permissions": "权限",
     "permissionsHelp": "你可以将该用户设置为管理员或单独选择各项权限。如果你选择了“管理员”，则其他的选项会被自动选中，同时该用户可以管理其他用户。\n",
-    "profileSettings": "个人设置",    "read": "读取",
+    "profileSettings": "个人设置",
+    "read": "读取",
     "write": "写入",
     "status": "状态",
     "active": "激活",
     "suspended": "暂停",
-    "username": "用户名",    "ruleExample1": "阻止用户访问所有文件夹下任何以 . 开头的文件（隐藏文件, 例如: .git, .gitignore）。\n",
+    "username": "用户名",
+    "ruleExample1": "阻止用户访问所有文件夹下任何以 . 开头的文件（隐藏文件, 例如: .git, .gitignore）。\n",
     "ruleExample2": "阻止用户访问其目录范围的根目录下名为 Caddyfile 的文件。",
     "rules": "规则",
     "rulesHelp": "你可以为该用户制定一组黑名单或白名单式的规则，被屏蔽的文件将不会显示在列表中，用户也无权限访问，支持正则表达式和相对于用户范围的路径。\n",
@@ -261,7 +266,10 @@
     "userManagement": "用户管理",
     "userUpdated": "用户已更新！",
     "username": "用户名",
-    "users": "用户"
+    "users": "用户",
+    "storageQuota": "存储配额",
+    "storageQuotaHelp": "设置此用户的最大存储空间。使用类似 10M、5G 的格式。设置为 0 或留空表示无限制（仅限管理员）。",
+    "unlimited": "无限制"
   },
   "otp": {
     "name": "两步验证",
@@ -288,29 +296,6 @@
     "resetSuccess": "TOTP密钥重置成功",
     "recoveryCodesGenerated": "恢复代码生成成功",
     "featureDisabled": "TOTP功能已被管理员禁用"
-  },
-  "passkey": {
-    "name": "通行密钥",
-    "add": "添加通行密钥",
-    "register": "注册通行密钥",
-    "list": "通行密钥列表",
-    "delete": "删除通行密钥",
-    "credentialName": "通行密钥名称",
-    "createdAt": "创建时间",
-    "lastUsedAt": "最后使用时间",
-    "registerSuccess": "通行密钥注册成功",
-    "deleteSuccess": "通行密钥删除成功",
-    "noPasskeys": "未注册通行密钥",
-    "registerInstructions": "使用设备的生物识别认证或安全密钥创建通行密钥",
-    "loginInstructions": "使用您的通行密钥登录",
-    "featureDisabled": "通行密钥功能已被管理员禁用",
-    "passkeyEnabled": "通行密钥已启用",
-    "passkeyDisabled": "通行密钥已禁用",
-    "loginRequired": "请先登录以注册通行密钥",
-    "enterName": "输入通行密钥的名称",
-    "defaultName": "我的通行密钥",
-    "registerFailed": "注册通行密钥失败",
-    "confirmDelete": "确定要删除此通行密钥吗？"
   },
   "webdav": {
     "name": "WebDAV",
@@ -343,7 +328,9 @@
     "preview": "预览",
     "settings": "设置",
     "signup": "注册",
-    "siteSettings": "网站设置"
+    "siteSettings": "网站设置",
+    "storageUsed": "/ {total}",
+    "storageUsedUnlimited": "（无限制）"
   },
   "success": {
     "linkCopied": "链接已复制！"

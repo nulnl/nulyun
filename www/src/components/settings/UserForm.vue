@@ -38,6 +38,19 @@
     </p>
 
     <p>
+      <label for="storageQuota">{{ t("settings.storageQuota") }}</label>
+      <input
+        class="input input--block"
+        type="text"
+        v-model="user.storageQuota"
+        id="storageQuota"
+        :disabled="user.perm?.admin"
+        :placeholder="user.perm?.admin ? t('settings.unlimited') : '10G'"
+      />
+      <span class="small">{{ t("settings.storageQuotaHelp") }}</span>
+    </p>
+
+    <p>
       <label for="locale">{{ t("settings.language") }}</label>
       <languages
         class="input input--block"
@@ -99,6 +112,17 @@ watch(
   () => {
     if (!props.user?.perm?.admin) return;
     props.user.lockPassword = false;
+    // Auto-set storage quota to 0 (unlimited) for admin users
+    props.user.storageQuota = "0";
+  }
+);
+
+watch(
+  () => props.user.perm?.admin,
+  (isAdmin) => {
+    if (isAdmin && props.user) {
+      props.user.storageQuota = "0";
+    }
   }
 );
 

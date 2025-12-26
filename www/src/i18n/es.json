@@ -60,7 +60,10 @@
     "forbidden": "No tienes los permisos necesarios para acceder.",
     "internal": "La verdad es que algo ha ido mal.",
     "notFound": "No se puede acceder a este lugar.",
-    "connection": "No se puede acceder al servidor."
+    "connection": "No se puede acceder al servidor.",
+    "quotaExceeded": "Cuota de almacenamiento excedida. Elimine algunos archivos o contacte al administrador.",
+    "quotaExceededDuringUpload": "Carga detenida: cuota de almacenamiento excedida. El archivo parcial ha sido eliminado.",
+    "insufficientSpace": "No hay suficiente espacio de almacenamiento disponible para esta carga."
   },
   "files": {
     "body": "Cuerpo",
@@ -254,14 +257,17 @@
     "userCreated": "¡Usuario creado!",
     "userDefaults": "Configuración de usuario por defecto",
     "userDeleted": "¡Usuario eliminado!",
-    "userManagement": "Administración de usuarios",
+    "userManagement": "Gestión de usuarios",
     "userUpdated": "¡Usuario actualizado!",
-    "username": "Usuario",
-    "users": "Usuarios"
+    "username": "Nombre de usuario",
+    "users": "Usuarios",
+    "storageQuota": "Cuota de Almacenamiento",
+    "storageQuotaHelp": "Establezca el espacio de almacenamiento máximo para este usuario. Use formatos como 10M, 5G, etc. Establezca en 0 o deje vacío para ilimitado (solo administrador).",
+    "unlimited": "Ilimitado"
   },
   "otp": {
     "enable": "Activar autenticación de dos factores",
-    "disable": "Desactivar autenticación de dos factores",
+    "disable": "Desactivación de dos factores",
     "enabled": "Autenticación de dos factores activada",
     "disabled": "Autenticación de dos factores desactivada",
     "reset": "Restablecer autenticación de dos factores",
@@ -285,26 +291,6 @@
     "printRecoveryCodes": "Imprimir códigos de recuperación",
     "recoveryCodesGenerated": "¡Códigos de recuperación generados!",
     "useRecoveryCode": "Usar código de recuperación"
-  },
-  "passkey": {
-    "add": "Agregar clave de acceso",
-    "register": "Registrar clave de acceso",
-    "delete": "Eliminar clave de acceso",
-    "deleted": "¡Clave de acceso eliminada!",
-    "registered": "¡Clave de acceso registrada!",
-    "credentialName": "Nombre de credencial",
-    "credentialNameHelp": "Ingrese un nombre para esta clave de acceso (por ejemplo, \"Mi huella digital\", \"Mi llave de hardware\")",
-    "registrationFailed": "Falló el registro de la clave de acceso",
-    "title": "Claves de acceso",
-    "description": "Las claves de acceso son una forma segura de autenticarse utilizando la biometría de su dispositivo o una llave de seguridad de hardware.",
-    "noPasskeys": "No ha registrado ninguna clave de acceso todavía.",
-    "createdAt": "Creado el",
-    "lastUsed": "Último uso",
-    "neverUsed": "Nunca usado",
-    "browserSupport": "Su navegador admite claves de acceso",
-    "browserNoSupport": "Su navegador no admite claves de acceso",
-    "attestationType": "Tipo de attestación",
-    "authenticatorAttachment": "Adjunto del autenticador"
   },
   "webdav": {
     "url": "URL de WebDAV",
@@ -334,8 +320,10 @@
     "newFolder": "Nueva carpeta",
     "preview": "Vista previa",
     "settings": "Ajustes",
-    "signup": "Registrate",
-    "siteSettings": "Ajustes del sitio"
+    "signup": "Registrarse",
+    "siteSettings": "Ajustes del sitio",
+    "storageUsed": "de {total} usado",
+    "storageUsedUnlimited": "usado (Ilimitado)"
   },
   "success": {
     "linkCopied": "¡Link copiado!"

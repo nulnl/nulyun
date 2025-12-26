@@ -1,5 +1,5 @@
 **Overview**
-- **Project**: Nul Yun — a self-hosted file service (backend + SPA) focused on file storage, sharing, previews, and WebAuthn/TOTP authentication.
+- **Project**: Nul Yun — a self-hosted file service (backend + SPA) focused on file storage, sharing, previews, and TOTP authentication.
 - **Purpose**: This doc helps integrators and client developers understand how to run the service, authenticate, call key APIs (REST, WebDAV, TUS), and build clients.
 - **Code entrypoints**: main server startup at [main.go](main.go) and HTTP routing at [http/http.go](http/http.go).
 
@@ -17,7 +17,6 @@
 
 - **Sending token**: include JWT in request header `X-Auth: <token>`. For GET requests, a cookie named `auth` is also supported.
 - **TOTP**: If enabled, login may return an OTP flow — see `/api/login/otp` in [http/http.go](http/http.go).
-- **Passkey/WebAuthn**: Endpoints under `/api/passkeys` and public login flows at `/api/passkey/login/begin` and `/api/passkey/login/finish`.
 
 **API Overview**
 - **Base path**: `/api` (see router in [http/http.go](http/http.go)).
@@ -40,11 +39,6 @@
 **WebDAV**
 - WebDAV endpoints are wired into the mux (see `setupWebDAVRoutes` and `setupWebDAVHandler` in [http/http.go]).
 - Mount the server as WebDAV at the configured base path and use standard WebDAV clients.
-
-**Passkeys (WebAuthn)**
-- Registration: `POST /api/passkeys/register/begin` and `POST /api/passkeys/register/finish`.
-- Login: `POST /api/passkey/login/begin` and `POST /api/passkey/login/finish` (public flows).
-- The server initializes a `webauthn` instance in [http/http.go]; client must implement WebAuthn flows per spec.
 
 **Storage & Configuration**
 - **Storage drivers**: default uses BoltDB for metadata and local filesystem for file storage. See [storage/bolt](storage/bolt) and [storage/storage.go](storage/storage.go).
@@ -88,7 +82,6 @@
 **Next Steps for Integrators**
 - Try the Quickstart, get a token via `/api/login`, list and upload files.
 - For browser clients implement JWT storage and add `X-Auth` header to API calls.
-- For WebAuthn support, re-check origins and RPID to match your deployment domain.
 
 If you want, I can also:
 - Add language-specific snippets (Node/Go/Python) for auth and uploads.

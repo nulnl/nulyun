@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/tomasen/realip"
 
 	settings "github.com/nulnl/nulyun/internal/model/global"
@@ -16,14 +15,11 @@ import (
 type handleFunc func(w http.ResponseWriter, r *http.Request, d *data) (int, error)
 
 type data struct {
-	settings                    *settings.Settings
-	server                      *settings.Server
-	store                       *storage.Storage
-	user                        *users.User
-	raw                         interface{}
-	webAuthn                    *webauthn.WebAuthn
-	passkeyRegistrationSessions map[uint]*webauthn.SessionData
-	passkeyLoginSessions        map[string]*webauthn.SessionData
+	settings *settings.Settings
+	server   *settings.Server
+	store    *storage.Storage
+	user     *users.User
+	raw      interface{}
 }
 
 // Check implements files.Checker.
@@ -44,12 +40,9 @@ func handle(fn handleFunc, prefix string, store *storage.Storage, server *settin
 		}
 
 		status, err := fn(w, r, &data{
-			store:                       store,
-			settings:                    settings,
-			server:                      server,
-			webAuthn:                    globalWebAuthn,
-			passkeyRegistrationSessions: globalPasskeyRegistrationSessions,
-			passkeyLoginSessions:        globalPasskeyLoginSessions,
+			store:    store,
+			settings: settings,
+			server:   server,
 		})
 
 		if status >= 400 || err != nil {

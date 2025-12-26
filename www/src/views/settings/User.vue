@@ -101,11 +101,25 @@ const fetchData = async () => {
         otpEnabled: false,
         otpPending: false,
       };
+      // Set default quota for new non-admin users
+      if (!user.value.perm?.admin) {
+        user.value.storageQuota = "10G";
+      } else {
+        user.value.storageQuota = "0";
+      }
     } else {
       const id = Array.isArray(route.params.id)
         ? route.params.id.join("")
         : route.params.id;
-      user.value = { ...(await api.get(parseInt(id))) };
+      const userData: any = await api.get(parseInt(id));
+      // Use formatted quota from backend
+      user.value = {
+        ...userData,
+        storageQuota:
+          userData.storageQuotaFormatted ||
+          userData.storageQuota?.toString() ||
+          "0",
+      };
     }
   } catch (err) {
     if (err instanceof Error) {

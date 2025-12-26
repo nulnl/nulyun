@@ -38,7 +38,7 @@ type User struct {
 	TOTPVerified   bool          `json:"totpVerified"`
 	TOTPEnabled    bool          `json:"totpEnabled"`
 	RecoveryCodes  []string      `json:"recoveryCodes"`
-	PasskeyEnabled bool          `json:"passkeyEnabled"`
+	StorageQuota   int64         `json:"storageQuota"` // in bytes, 0 means unlimited
 }
 
 var checkableFields = []string{

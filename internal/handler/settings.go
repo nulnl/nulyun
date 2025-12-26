@@ -18,7 +18,6 @@ type settingsData struct {
 	Tus                   settings.Tus          `json:"tus"`
 	Shell                 []string              `json:"shell"`
 	TOTPEnabled           bool                  `json:"totpEnabled"`
-	PasskeyEnabled        bool                  `json:"passkeyEnabled"`
 }
 
 var settingsGetHandler = withAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
@@ -33,7 +32,6 @@ var settingsGetHandler = withAdmin(func(w http.ResponseWriter, r *http.Request, 
 		Tus:                   d.settings.Tus,
 		Shell:                 d.settings.Shell,
 		TOTPEnabled:           d.settings.TOTPEnabled,
-		PasskeyEnabled:        d.settings.PasskeyEnabled,
 	}
 
 	return renderJSON(w, r, data)
@@ -56,7 +54,6 @@ var settingsPutHandler = withAdmin(func(_ http.ResponseWriter, r *http.Request, 
 	d.settings.Shell = req.Shell
 	d.settings.HideLoginButton = req.HideLoginButton
 	d.settings.TOTPEnabled = req.TOTPEnabled
-	d.settings.PasskeyEnabled = req.PasskeyEnabled
 
 	err = d.store.Settings.Save(d.settings)
 	return errToStatus(err), err

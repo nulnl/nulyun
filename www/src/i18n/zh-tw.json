@@ -60,7 +60,10 @@
     "forbidden": "您無權訪問。",
     "internal": "伺服器出了點問題。",
     "notFound": "找不到檔案。",
-    "connection": "無法連接到伺服器。"
+    "connection": "無法連接到伺服器。",
+    "quotaExceeded": "儲存配額已超出。請刪除一些檔案或聯絡管理員。",
+    "quotaExceededDuringUpload": "上傳已停止：儲存配額已超出。已刪除部分上傳的檔案。",
+    "insufficientSpace": "沒有足夠的儲存空間用於此次上傳。"
   },
   "files": {
     "body": "内容",
@@ -257,7 +260,10 @@
     "userManagement": "使用者管理",
     "userUpdated": "使用者已更新！",
     "username": "使用者名稱",
-    "users": "使用者"
+    "users": "使用者",
+    "storageQuota": "儲存配額",
+    "storageQuotaHelp": "設定此使用者的最大儲存空間。使用類似 10M、5G 的格式。設定為 0 或留空表示無限制（僅限管理員）。",
+    "unlimited": "無限制"
   },
   "otp": {
     "enable": "啟用雙重驗證",
@@ -285,26 +291,6 @@
     "printRecoveryCodes": "列印復原代碼",
     "recoveryCodesGenerated": "已產生復原代碼！",
     "useRecoveryCode": "使用復原代碼"
-  },
-  "passkey": {
-    "add": "新增通行金鑰",
-    "register": "註冊通行金鑰",
-    "delete": "刪除通行金鑰",
-    "deleted": "通行金鑰已刪除！",
-    "registered": "通行金鑰已註冊！",
-    "credentialName": "憑證名稱",
-    "credentialNameHelp": "輸入此通行金鑰的名稱（例如\"我的指紋\"、\"我的硬體金鑰\"）",
-    "registrationFailed": "通行金鑰註冊失敗",
-    "title": "通行金鑰",
-    "description": "通行金鑰是一種使用您的裝置生物特徵識別或硬體安全金鑰來驗證身分的安全方式。",
-    "noPasskeys": "您尚未註冊任何通行金鑰。",
-    "createdAt": "建立於",
-    "lastUsed": "上次使用",
-    "neverUsed": "從未使用",
-    "browserSupport": "您的瀏覽器支援通行金鑰",
-    "browserNoSupport": "您的瀏覽器不支援通行金鑰",
-    "attestationType": "驗證類型",
-    "authenticatorAttachment": "驗證器附件"
   },
   "webdav": {
     "url": "WebDAV 網址",
@@ -335,7 +321,9 @@
     "preview": "預覽",
     "settings": "設定",
     "signup": "註冊",
-    "siteSettings": "網站設定"
+    "siteSettings": "網站設定",
+    "storageUsed": "/ {total}",
+    "storageUsedUnlimited": "（無限制）"
   },
   "success": {
     "linkCopied": "連結已複製！"

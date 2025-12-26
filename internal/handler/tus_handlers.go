@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/nulnl/nulyun/internal/files"
+	"github.com/nulnl/nulyun/internal/model/users"
 )
 
 const maxUploadWait = 3 * time.Minute
@@ -102,7 +103,7 @@ func tusPostHandler() handleFunc {
 
 		fileFlags := os.O_CREATE | os.O_WRONLY
 
-		// if file exists
+		// If file exists
 		if file != nil {
 			if file.IsDir {
 				return http.StatusBadRequest, fmt.Errorf("cannot upload to a directory %s", file.RealPath())
@@ -119,6 +120,33 @@ func tusPostHandler() handleFunc {
 			}
 
 			fileFlags |= os.O_TRUNC
+		}
+
+		// Get upload length early to check quota
+		uploadLength, err := getUploadLength(r)
+		if err != nil {
+			return http.StatusBadRequest, fmt.Errorf("invalid upload length: %w", err)
+		}
+
+		// Check storage quota BEFORE creating/opening file
+		if d.user.StorageQuota > 0 { // 0 means unlimited
+			currentUsage, err := users.CalculateUserUsage(d.user.Fs)
+			if err != nil {
+				return http.StatusInternalServerError, fmt.Errorf("failed to calculate storage usage: %w", err)
+			}
+
+			// If overwriting, subtract existing file size from current usage
+			if file != nil && (fileFlags&os.O_TRUNC != 0) {
+				currentUsage -= file.Size
+				if currentUsage < 0 {
+					currentUsage = 0
+				}
+			}
+
+			if !users.CheckQuotaAvailable(currentUsage, d.user.StorageQuota, uploadLength) {
+				return http.StatusInsufficientStorage, fmt.Errorf("storage quota exceeded: current usage %d bytes, quota %d bytes, upload size %d bytes",
+					currentUsage, d.user.StorageQuota, uploadLength)
+			}
 		}
 
 		openFile, err := d.user.Fs.OpenFile(r.URL.Path, fileFlags, d.settings.FileMode)
@@ -138,11 +166,6 @@ func tusPostHandler() handleFunc {
 		})
 		if err != nil {
 			return errToStatus(err), err
-		}
-
-		uploadLength, err := getUploadLength(r)
-		if err != nil {
-			return http.StatusBadRequest, fmt.Errorf("invalid upload length: %w", err)
 		}
 
 		// Enables the user to utilize the PATCH endpoint for uploading file data
@@ -254,6 +277,20 @@ func tusPatchHandler() handleFunc {
 		bytesWritten, err := io.Copy(openFile, r.Body)
 		if err != nil {
 			return http.StatusInternalServerError, fmt.Errorf("could not write to file: %w", err)
+		}
+
+		// Check if quota exceeded during upload
+		if d.user.StorageQuota > 0 { // 0 means unlimited
+			currentUsage, quotaErr := users.CalculateUserUsage(d.user.Fs)
+			if quotaErr == nil && currentUsage > d.user.StorageQuota {
+				// Quota exceeded! Delete the file and return error
+				openFile.Close()
+				d.user.Fs.RemoveAll(r.URL.Path)
+				completeUpload(file.RealPath()) // Clean up upload tracking
+				return http.StatusInsufficientStorage, fmt.Errorf(
+					"storage quota exceeded during upload: current usage %d bytes exceeds quota %d bytes. Partial file deleted",
+					currentUsage, d.user.StorageQuota)
+			}
 		}
 
 		newOffset := uploadOffset + bytesWritten

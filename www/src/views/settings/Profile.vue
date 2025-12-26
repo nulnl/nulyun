@@ -83,7 +83,6 @@
     </div>
 
     <profile-2fa />
-    <profile-passkeys />
   </div>
 </template>
 
@@ -96,7 +95,6 @@ import Languages from "@/components/settings/Languages.vue";
 import { computed, inject, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import Profile2fa from "@/components/settings/Profile2FA.vue";
-import ProfilePasskeys from "@/components/settings/ProfilePasskeys.vue";
 
 const layoutStore = useLayoutStore();
 const authStore = useAuthStore();

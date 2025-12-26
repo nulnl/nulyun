@@ -60,7 +60,10 @@
     "forbidden": "Você não tem permissões para acessar isto.",
     "internal": "Ops! Algum erro ocorreu.",
     "notFound": "Ops! Nada foi encontrado.",
-    "connection": "O servidor não pode ser alcançado."
+    "connection": "O servidor não pode ser alcançado.",
+    "quotaExceeded": "Cota de armazenamento excedida. Exclua alguns arquivos ou entre em contato com o administrador.",
+    "quotaExceededDuringUpload": "Upload interrompido: cota de armazenamento excedida. O arquivo parcial foi excluído.",
+    "insufficientSpace": "Espaço de armazenamento insuficiente para este upload."
   },
   "files": {
     "body": "Corpo",
@@ -257,7 +260,10 @@
     "userManagement": "Gerenciamento de usuários",
     "userUpdated": "Usuário atualizado!",
     "username": "Nome do usuário",
-    "users": "Usuários"
+    "users": "Usuários",
+    "storageQuota": "Cota de Armazenamento",
+    "storageQuotaHelp": "Defina o espaço máximo de armazenamento para este usuário. Use formatos como 10M, 5G, etc. Defina como 0 ou deixe vazio para ilimitado (somente administrador).",
+    "unlimited": "Ilimitado"
   },
   "otp": {
     "enable": "Ativar autenticação de dois fatores",
@@ -285,26 +291,6 @@
     "printRecoveryCodes": "Imprimir códigos de recuperação",
     "recoveryCodesGenerated": "Códigos de recuperação gerados!",
     "useRecoveryCode": "Usar código de recuperação"
-  },
-  "passkey": {
-    "add": "Adicionar chave de acesso",
-    "register": "Registrar chave de acesso",
-    "delete": "Excluir chave de acesso",
-    "deleted": "Chave de acesso excluída!",
-    "registered": "Chave de acesso registrada!",
-    "credentialName": "Nome da credencial",
-    "credentialNameHelp": "Insira um nome para esta chave de acesso (por exemplo, \"Minha impressão digital\", \"Minha chave de hardware\")",
-    "registrationFailed": "Falha ao registrar chave de acesso",
-    "title": "Chaves de acesso",
-    "description": "As chaves de acesso são uma forma segura de autenticar usando a biometria do seu dispositivo ou uma chave de segurança de hardware.",
-    "noPasskeys": "Você ainda não registrou nenhuma chave de acesso.",
-    "createdAt": "Criado em",
-    "lastUsed": "Último uso",
-    "neverUsed": "Nunca usado",
-    "browserSupport": "Seu navegador suporta chaves de acesso",
-    "browserNoSupport": "Seu navegador não suporta chaves de acesso",
-    "attestationType": "Tipo de atestado",
-    "authenticatorAttachment": "Anexo do autenticador"
   },
   "webdav": {
     "url": "URL WebDAV",
@@ -335,7 +321,9 @@
     "preview": "Pré-visualizar",
     "settings": "Configurações",
     "signup": "Cadastrar",
-    "siteSettings": "Configurações do site"
+    "siteSettings": "Configurações do site",
+    "storageUsed": "de {total} usado",
+    "storageUsedUnlimited": "usado (Ilimitado)"
   },
   "success": {
     "linkCopied": "Link copiado!"

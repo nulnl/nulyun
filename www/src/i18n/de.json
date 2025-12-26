@@ -60,7 +60,10 @@
     "forbidden": "Sie haben keine Berechtigung dies abzurufen.",
     "internal": "Etwas ist schiefgelaufen.",
     "notFound": "Dieser Ort kann nicht angezeigt werden.",
-    "connection": "Der Server ist nicht erreichbar."
+    "connection": "Der Server ist nicht erreichbar.",
+    "quotaExceeded": "Speicherplatzkontingent überschritten. Bitte löschen Sie einige Dateien oder kontaktieren Sie den Administrator.",
+    "quotaExceededDuringUpload": "Upload gestoppt: Speicherplatzkontingent überschritten. Teildatei wurde gelöscht.",
+    "insufficientSpace": "Nicht genügend Speicherplatz für diesen Upload verfügbar."
   },
   "files": {
     "body": "Body",
@@ -257,7 +260,10 @@
     "userManagement": "Benutzerverwaltung",
     "userUpdated": "Benutzer aktualisiert!",
     "username": "Nutzername",
-    "users": "Nutzer"
+    "users": "Nutzer",
+    "storageQuota": "Speicherplatzkontingent",
+    "storageQuotaHelp": "Legt den maximal verfügbaren Speicherplatz für diesen Benutzer fest. Verwenden Sie Formate wie 10M, 5G usw. Auf 0 setzen oder leer lassen für unbegrenzt (nur Admin).",
+    "unlimited": "Unbegrenzt"
   },
   "otp": {
     "enable": "Zwei-Faktor-Authentifizierung aktivieren",
@@ -285,26 +291,6 @@
     "printRecoveryCodes": "Wiederherstellungscodes drucken",
     "recoveryCodesGenerated": "Wiederherstellungscodes wurden generiert!",
     "useRecoveryCode": "Wiederherstellungscode verwenden"
-  },
-  "passkey": {
-    "add": "Passkey hinzufügen",
-    "register": "Passkey registrieren",
-    "delete": "Passkey löschen",
-    "deleted": "Passkey wurde gelöscht!",
-    "registered": "Passkey wurde registriert!",
-    "credentialName": "Anmeldeinformationsname",
-    "credentialNameHelp": "Geben Sie einen Namen für diesen Passkey ein (z. B. \"Mein Fingerabdruck\", \"Mein Hardware-Schlüssel\")",
-    "registrationFailed": "Passkey-Registrierung fehlgeschlagen",
-    "title": "Passkeys",
-    "description": "Passkeys sind eine sichere Methode zur Authentifizierung mit der Biometrie Ihres Geräts oder einem Hardware-Sicherheitsschlüssel.",
-    "noPasskeys": "Sie haben noch keine Passkeys registriert.",
-    "createdAt": "Erstellt am",
-    "lastUsed": "Zuletzt verwendet",
-    "neverUsed": "Nie verwendet",
-    "browserSupport": "Ihr Browser unterstützt Passkeys",
-    "browserNoSupport": "Ihr Browser unterstützt keine Passkeys",
-    "attestationType": "Attestierungstyp",
-    "authenticatorAttachment": "Authentifikator-Anhang"
   },
   "webdav": {
     "url": "WebDAV-URL",
@@ -335,7 +321,9 @@
     "preview": "Vorschau",
     "settings": "Einstellungen",
     "signup": "Registrieren",
-    "siteSettings": "Seiteneinstellungen"
+    "siteSettings": "Seiteneinstellungen",
+    "storageUsed": "von {total} verwendet",
+    "storageUsedUnlimited": "verwendet (Unbegrenzt)"
   },
   "success": {
     "linkCopied": "Verweis wurde kopiert!"

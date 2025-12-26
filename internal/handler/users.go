@@ -11,11 +11,13 @@ import (
 	"sort"
 	"strconv"
 
+	// Added by user
 	"github.com/gorilla/mux"
-	"github.com/pquerna/otp/totp"
+	"github.com/pquerna/otp/totp" // Added by user
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 
+	"github.com/nulnl/nulyun/internal/files" // Added by user
 	"github.com/nulnl/nulyun/internal/model/users"
 	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
@@ -28,6 +30,25 @@ var (
 type modifyUserRequest struct {
 	modifyRequest
 	Data *users.User `json:"data"`
+}
+
+type createUserRequest struct {
+	What           string            `json:"what"`
+	Which          []string          `json:"which"`
+	Username       string            `json:"username"`
+	Password       string            `json:"password"`
+	Scope          string            `json:"scope"`
+	Locale         string            `json:"locale"`
+	LockPassword   bool              `json:"lockPassword"`
+	ViewMode       users.ViewMode    `json:"viewMode"`
+	SingleClick    bool              `json:"singleClick"`
+	Perm           users.Permissions `json:"perm"`
+	Sorting        files.Sorting     `json:"sorting"`
+	HideDotfiles   bool              `json:"hideDotfiles"`
+	DateFormat     bool              `json:"dateFormat"`
+	AceEditorTheme string            `json:"aceEditorTheme"`
+	TOTPEnabled    bool              `json:"totpEnabled"`
+	StorageQuota   string            `json:"storageQuota"` // Accept as string from frontend
 }
 
 type enableTOTPVerificationRequest struct {
@@ -124,7 +145,19 @@ var userGetHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request
 	if !d.user.Perm.Admin {
 		u.Scope = ""
 	}
-	return renderJSON(w, r, u)
+
+	// Return formatted quota for frontend display
+	type userResponse struct {
+		*users.User
+		StorageQuotaFormatted string `json:"storageQuotaFormatted"`
+	}
+
+	response := &userResponse{
+		User:                  u,
+		StorageQuotaFormatted: users.FormatQuotaBytes(u.StorageQuota),
+	}
+
+	return renderJSON(w, r, response)
 })
 
 var userDeleteHandler = withSelfOrAdmin(func(_ http.ResponseWriter, _ *http.Request, d *data) (int, error) {
@@ -137,38 +170,79 @@ var userDeleteHandler = withSelfOrAdmin(func(_ http.ResponseWriter, _ *http.Requ
 })
 
 var userPostHandler = withAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	req, err := getUser(w, r)
+	if r.Body == nil {
+		return http.StatusBadRequest, fberrors.ErrEmptyRequest
+	}
+
+	var createReq struct {
+		What string            `json:"what"`
+		Data createUserRequest `json:"data"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&createReq)
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
 
-	if len(req.Which) != 0 {
-		return http.StatusBadRequest, nil
+	if createReq.What != "user" {
+		return http.StatusBadRequest, fberrors.ErrInvalidDataType
 	}
 
-	if req.Data.Password == "" {
+	if createReq.Data.Password == "" {
 		return http.StatusBadRequest, fberrors.ErrEmptyPassword
 	}
 
-	req.Data.Password, err = users.ValidateAndHashPwd(req.Data.Password, d.settings.MinimumPasswordLength)
+	// Create user from request
+	newUser := &users.User{
+		Username:       createReq.Data.Username,
+		Password:       createReq.Data.Password,
+		Scope:          createReq.Data.Scope,
+		Locale:         createReq.Data.Locale,
+		LockPassword:   createReq.Data.LockPassword,
+		ViewMode:       createReq.Data.ViewMode,
+		SingleClick:    createReq.Data.SingleClick,
+		Perm:           createReq.Data.Perm,
+		Sorting:        createReq.Data.Sorting,
+		HideDotfiles:   createReq.Data.HideDotfiles,
+		DateFormat:     createReq.Data.DateFormat,
+		AceEditorTheme: createReq.Data.AceEditorTheme,
+		TOTPEnabled:    createReq.Data.TOTPEnabled,
+	}
+
+	newUser.Password, err = users.ValidateAndHashPwd(newUser.Password, d.settings.MinimumPasswordLength)
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
 
-	userHome, err := d.settings.MakeUserDir(req.Data.Username, req.Data.Scope, d.server.Root)
+	// Parse and set storage quota: 0 (unlimited) for admins, parse string for others
+	if newUser.Perm.Admin {
+		newUser.StorageQuota = 0
+	} else if createReq.Data.StorageQuota != "" && createReq.Data.StorageQuota != "0" {
+		// Parse quota string like "10M" or "5G"
+		quota, err := users.ParseQuotaString(createReq.Data.StorageQuota)
+		if err != nil {
+			return http.StatusBadRequest, fmt.Errorf("invalid storage quota format: %w", err)
+		}
+		newUser.StorageQuota = quota
+	} else {
+		// Use default quota
+		newUser.StorageQuota = d.settings.Defaults.StorageQuota
+	}
+
+	userHome, err := d.settings.MakeUserDir(newUser.Username, newUser.Scope, d.server.Root)
 	if err != nil {
 		log.Printf("create user: failed to mkdir user home dir: [%s]", userHome)
 		return http.StatusInternalServerError, err
 	}
-	req.Data.Scope = userHome
-	log.Printf("user: %s, home dir: [%s].", req.Data.Username, userHome)
+	newUser.Scope = userHome
+	log.Printf("user: %s, home dir: [%s].", newUser.Username, userHome)
 
-	err = d.store.Users.Save(req.Data)
+	err = d.store.Users.Save(newUser)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	w.Header().Set("Location", "/settings/users/"+strconv.FormatUint(uint64(req.Data.ID), 10))
+	w.Header().Set("Location", "/settings/users/"+strconv.FormatUint(uint64(newUser.ID), 10))
 	return http.StatusCreated, nil
 })
 
@@ -536,35 +610,6 @@ var userToggleTOTPHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.
 
 	targetUser.TOTPEnabled = req.Enabled
 	if err := d.store.Users.Update(targetUser, "TOTPEnabled"); err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	return http.StatusOK, nil
-})
-
-// userTogglePasskeyHandler enables or disables Passkey for a user (admin only for other users)
-var userTogglePasskeyHandler = withSelfOrAdmin(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	if !d.server.EnablePasskey {
-		return http.StatusForbidden, fmt.Errorf("Passkey feature is disabled")
-	}
-
-	targetUser, err := d.store.Users.Get(d.server.Root, d.raw.(uint))
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	type toggleRequest struct {
-		Enabled bool `json:"enabled"`
-	}
-
-	var req toggleRequest
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		return http.StatusBadRequest, fmt.Errorf("Invalid request body: %w", err)
-	}
-
-	targetUser.PasskeyEnabled = req.Enabled
-	if err := d.store.Users.Update(targetUser, "PasskeyEnabled"); err != nil {
 		return http.StatusInternalServerError, err
 	}
 

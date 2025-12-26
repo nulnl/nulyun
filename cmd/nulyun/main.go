@@ -58,7 +58,6 @@ var (
 	disablePreviewResize         = flag.Bool("disablePreviewResize", false, "disable resize of image previews")
 	disableTypeDetectionByHeader = flag.Bool("disableTypeDetectionByHeader", false, "disables type detection by reading file headers")
 	disableTOTP                  = flag.Bool("disableTOTP", false, "disable TOTP authentication feature")
-	disablePasskey               = flag.Bool("disablePasskey", false, "disable Passkey/WebAuthn authentication feature")
 
 	// Quick setup flags
 	noauth   = flag.Bool("noauth", false, "use the noauth auther when using quick setup")
@@ -67,6 +66,9 @@ var (
 
 	// Other
 	imageProcessors = flag.Int("imageProcessors", 4, "image processors count")
+
+	// Storage quota
+	defaultStorageQuota = flag.String("defaultStorageQuota", "10G", "default storage quota for new users (e.g., 10M, 5G, 0 for unlimited)")
 )
 
 // Config represents the JSON configuration file structure
@@ -86,11 +88,11 @@ type Config struct {
 	DisablePreviewResize         *bool  `json:"disablePreviewResize,omitempty"`
 	DisableTypeDetectionByHeader *bool  `json:"disableTypeDetectionByHeader,omitempty"`
 	DisableTOTP                  *bool  `json:"disableTOTP,omitempty"`
-	DisablePasskey               *bool  `json:"disablePasskey,omitempty"`
 	Noauth                       *bool  `json:"noauth,omitempty"`
 	Username                     string `json:"username,omitempty"`
 	Password                     string `json:"password,omitempty"`
 	ImageProcessors              *int   `json:"imageProcessors,omitempty"`
+	DefaultStorageQuota          string `json:"defaultStorageQuota,omitempty"`
 }
 
 func main() {
@@ -304,9 +306,6 @@ func loadConfig(path string) error {
 	if cfg.DisableTOTP != nil && !isFlagSet("disableTOTP") {
 		*disableTOTP = *cfg.DisableTOTP
 	}
-	if cfg.DisablePasskey != nil && !isFlagSet("disablePasskey") {
-		*disablePasskey = *cfg.DisablePasskey
-	}
 	if cfg.Noauth != nil && !isFlagSet("noauth") {
 		*noauth = *cfg.Noauth
 	}
@@ -318,6 +317,9 @@ func loadConfig(path string) error {
 	}
 	if cfg.ImageProcessors != nil && !isFlagSet("imageProcessors") {
 		*imageProcessors = *cfg.ImageProcessors
+	}
+	if cfg.DefaultStorageQuota != "" && !isFlagSet("defaultStorageQuota") {
+		*defaultStorageQuota = cfg.DefaultStorageQuota
 	}
 
 	return nil
@@ -373,7 +375,6 @@ func getServerSettings(st *storage.Storage) (*settings.Server, error) {
 	server.ResizePreview = !*disablePreviewResize
 	server.TypeDetectionByHeader = !*disableTypeDetectionByHeader
 	server.EnableTOTP = !*disableTOTP
-	server.EnablePasskey = !*disablePasskey
 
 	return server, nil
 }
@@ -399,6 +400,13 @@ func setupLog(logMethod string) {
 func quickSetup(st *storage.Storage) error {
 	log.Println("Performing quick setup")
 
+	// Parse default storage quota
+	defaultQuota, err := users.ParseQuotaString(*defaultStorageQuota)
+	if err != nil {
+		log.Printf("WARNING: Invalid default storage quota '%s', using 10G: %v", *defaultStorageQuota, err)
+		defaultQuota = 10 * 1024 * 1024 * 1024 // 10GB
+	}
+
 	set := &settings.Settings{
 		Key:                   generateKey(),
 		Signup:                false,
@@ -420,8 +428,8 @@ func quickSetup(st *storage.Storage) error {
 				Share:    true,
 				Download: true,
 			},
-			TOTPEnabled:    true,
-			PasskeyEnabled: true,
+			TOTPEnabled:  true,
+			StorageQuota: defaultQuota,
 		},
 		AuthMethod: "",
 		Branding:   settings.Branding{},
@@ -429,25 +437,24 @@ func quickSetup(st *storage.Storage) error {
 			ChunkSize:  settings.DefaultTusChunkSize,
 			RetryCount: settings.DefaultTusRetryCount,
 		},
-		Shell:          nil,
-		TOTPEnabled:    true,
-		PasskeyEnabled: true,
+		Shell:       nil,
+		TOTPEnabled: true,
 	}
 
-	var err error
+	var authErr error
 	if *noauth {
 		set.AuthMethod = auth.MethodNoAuth
-		err = st.Auth.Save(&auth.NoAuth{})
+		authErr = st.Auth.Save(&auth.NoAuth{})
 	} else {
 		set.AuthMethod = auth.MethodJSONAuth
-		err = st.Auth.Save(&auth.JSONAuth{})
+		authErr = st.Auth.Save(&auth.JSONAuth{})
 	}
-	if err != nil {
-		return err
+	if authErr != nil {
+		return authErr
 	}
 
-	if err = st.Settings.Save(set); err != nil {
-		return err
+	if authErr = st.Settings.Save(set); authErr != nil {
+		return authErr
 	}
 
 	// Save server settings
@@ -465,7 +472,6 @@ func quickSetup(st *storage.Storage) error {
 		ResizePreview:           !*disablePreviewResize,
 		TypeDetectionByHeader:   !*disableTypeDetectionByHeader,
 		EnableTOTP:              !*disableTOTP,
-		EnablePasskey:           !*disablePasskey,
 	}
 
 	if err = st.Settings.SaveServer(ser); err != nil {
@@ -501,6 +507,7 @@ func quickSetup(st *storage.Storage) error {
 
 	set.Defaults.Apply(user)
 	user.Perm.Admin = true
+	user.StorageQuota = 0 // Ensure admin has unlimited storage
 
 	return st.Users.Save(user)
 }

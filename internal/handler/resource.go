@@ -14,10 +14,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/spf13/afero"
 
 	"github.com/nulnl/nulyun/internal/files"
+	"github.com/nulnl/nulyun/internal/model/users"
 	fberrors "github.com/nulnl/nulyun/internal/pkg_errors"
 )
 
@@ -105,6 +105,22 @@ func resourcePostHandler(fileCache FileCache) handleFunc {
 		if strings.HasSuffix(r.URL.Path, "/") {
 			err := d.user.Fs.MkdirAll(r.URL.Path, d.settings.DirMode)
 			return errToStatus(err), err
+		}
+
+		// Check storage quota BEFORE creating/opening file
+		if d.user.StorageQuota > 0 { // 0 means unlimited
+			contentLength := r.ContentLength
+			if contentLength > 0 {
+				currentUsage, quotaErr := users.CalculateUserUsage(d.user.Fs)
+				if quotaErr != nil {
+					return http.StatusInternalServerError, quotaErr
+				}
+				if !users.CheckQuotaAvailable(currentUsage, d.user.StorageQuota, contentLength) {
+					return http.StatusInsufficientStorage, fmt.Errorf(
+						"storage quota exceeded: current usage %d bytes, quota %d bytes, upload size %d bytes",
+						currentUsage, d.user.StorageQuota, contentLength)
+				}
+			}
 		}
 
 		file, err := files.NewFileInfo(&files.FileOptions{
@@ -325,37 +341,20 @@ func patchAction(ctx context.Context, action, src, dst string, d *data, fileCach
 }
 
 type DiskUsageResponse struct {
-	Total uint64 `json:"total"`
-	Used  uint64 `json:"used"`
+	Total uint64 `json:"total"` // User quota (0 means unlimited)
+	Used  uint64 `json:"used"`  // Current usage
 }
 
 var diskUsage = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-	file, err := files.NewFileInfo(&files.FileOptions{
-		Fs:         d.user.Fs,
-		Path:       r.URL.Path,
-		Modify:     d.user.Perm.Modify,
-		Expand:     false,
-		ReadHeader: false,
-		Checker:    d,
-		Content:    false,
-	})
+	// Calculate user's current usage
+	currentUsage, err := users.CalculateUserUsage(d.user.Fs)
 	if err != nil {
-		return errToStatus(err), err
-	}
-	fPath := file.RealPath()
-	if !file.IsDir {
-		return renderJSON(w, r, &DiskUsageResponse{
-			Total: 0,
-			Used:  0,
-		})
+		return http.StatusInternalServerError, err
 	}
 
-	usage, err := disk.UsageWithContext(r.Context(), fPath)
-	if err != nil {
-		return errToStatus(err), err
-	}
+	// Return user quota and usage
 	return renderJSON(w, r, &DiskUsageResponse{
-		Total: usage.Total,
-		Used:  usage.Used,
+		Total: uint64(d.user.StorageQuota), // 0 if unlimited
+		Used:  uint64(currentUsage),
 	})
 })

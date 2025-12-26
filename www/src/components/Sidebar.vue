@@ -82,16 +82,6 @@
       </router-link>
     </template>
 
-    <div
-      class="credits"
-      v-if="isFiles && !disableUsedPercentage"
-      style="width: 90%; margin: 2em 2.5em 3em 2.5em"
-    >
-      <progress-bar :val="usage.usedPercentage" size="small"></progress-bar>
-      <br />
-      {{ usage.used }} of {{ usage.total }} used
-    </div>
-
     <p class="credits">
       <span>
         <span v-if="disableExternal">nulyun</span>
@@ -130,7 +120,6 @@ import {
   loginPage,
 } from "@/utils/constants";
 import { files as api } from "@/api";
-import ProgressBar from "@/components/ProgressBar.vue";
 import prettyBytes from "pretty-bytes";
 
 const USAGE_DEFAULT = { used: "0 B", total: "0 B", usedPercentage: 0 };
@@ -140,9 +129,6 @@ export default {
   setup() {
     const usage = reactive(USAGE_DEFAULT);
     return { usage, usageAbortController: new AbortController() };
-  },
-  components: {
-    ProgressBar,
   },
   inject: ["$showError"],
   computed: {
@@ -169,17 +155,18 @@ export default {
         ? this.$route.path
         : this.$route.path + "/";
       let usageStats = USAGE_DEFAULT;
-      if (this.disableUsedPercentage) {
-        return Object.assign(this.usage, usageStats);
-      }
       try {
         this.abortOngoingFetchUsage();
         this.usageAbortController = new AbortController();
         const usage = await api.usage(path, this.usageAbortController.signal);
+        const used = prettyBytes(usage.used, { binary: true });
+        const total =
+          usage.total > 0 ? prettyBytes(usage.total, { binary: true }) : "";
         usageStats = {
-          used: prettyBytes(usage.used, { binary: true }),
-          total: prettyBytes(usage.total, { binary: true }),
-          usedPercentage: Math.round((usage.used / usage.total) * 100),
+          used,
+          total,
+          usedPercentage:
+            usage.total > 0 ? Math.round((usage.used / usage.total) * 100) : 0,
         };
       } finally {
         return Object.assign(this.usage, usageStats);
@@ -217,3 +204,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.usage-text {
+  font-size: 0.85em;
+  color: var(--text-secondary, #666);
+  line-height: 1.2;
+}
+</style>

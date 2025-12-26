@@ -36,7 +36,6 @@ type Settings struct {
 	HideDotfiles          bool         `json:"hideDotfiles"`
 	TOTPEncryptionKey     []byte       `json:"totpEncryptionKey"`
 	TOTPEnabled           bool         `json:"totpEnabled"`
-	PasskeyEnabled        bool         `json:"passkeyEnabled"`
 }
 
 // Server specific settings.
@@ -55,7 +54,6 @@ type Server struct {
 	TokenExpirationTime     string `json:"tokenExpirationTime"`
 	TOTPTokenExpirationTime string `json:"totpTokenExpirationTime"`
 	EnableTOTP              bool   `json:"enableTOTP"`
-	EnablePasskey           bool   `json:"enablePasskey"`
 }
 
 // Clean cleans any variables that might need cleaning.

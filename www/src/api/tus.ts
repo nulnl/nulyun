@@ -42,8 +42,13 @@ export async function upload(
           ? err.originalResponse.getStatus()
           : 0;
 
-        // Do not retry for file conflict.
-        if (status === 409) {
+        // Do not retry for non-transient errors
+        if (
+          status === 409 ||
+          status === 507 ||
+          status === 413 ||
+          status === 403
+        ) {
           return false;
         }
 

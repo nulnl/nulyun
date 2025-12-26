@@ -12,6 +12,7 @@ interface IUser {
   viewMode: ViewModeType;
   otpEnabled: boolean;
   otpPending: boolean;
+  storageQuota?: string; // Formatted storage quota like "10M", "5G"
   sorting?: Sorting;
   aceEditorTheme: string;
 }

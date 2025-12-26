@@ -1,6 +1,6 @@
 # Nul Yun
 
-A modern, lightweight, self-hosted file management service with advanced features including WebAuthn passkey authentication, TOTP two-factor authentication, file sharing, WebDAV support, and more.
+A modern, lightweight, self-hosted file management service with advanced features including TOTP two-factor authentication, file sharing, WebDAV support, and more.
 
 ![Version](https://img.shields.io/badge/version-0.0.0--beta6-blue)
 ![Go Version](https://img.shields.io/badge/go-1.25-00ADD8?logo=go)
@@ -17,8 +17,7 @@ A modern, lightweight, self-hosted file management service with advanced feature
 
 ### Security & Authentication
 - 🔐 **Multiple Auth Methods**: JSON, Proxy, and NoAuth modes
-- 🔑 **Passkey Support**: WebAuthn/FIDO2 passwordless authentication
-- 🔢 **TOTP 2FA**: Time-based one-time password two-factor authentication
+-  **TOTP 2FA**: Time-based one-time password two-factor authentication
 - 🎫 **JWT Tokens**: Secure session management with automatic renewal
 - 🔒 **Permission System**: Granular file and administrative permissions
 
@@ -132,8 +131,7 @@ make test
   --tokenExpirationTime=2h \
   --disableThumbnails=false \
   --disablePreviewResize=false \
-  --disableTOTP=false \
-  --disablePasskey=false
+  --disableTOTP=false
 ```
 
 ### Configuration File
@@ -155,7 +153,6 @@ Create a `config.json` file:
   "disablePreviewResize": false,
   "disableTypeDetectionByHeader": false,
   "disableTOTP": false,
-  "disablePasskey": false,
   "imageProcessors": 4,
   "username": "admin",
   "password": ""
@@ -178,7 +175,6 @@ nulyun/
 │   ├── http/              # HTTP handlers and routing
 │   ├── settings/          # Settings management
 │   │   ├── global/        # Global server settings
-│   │   ├── passkey/       # Passkey settings
 │   │   ├── share/         # Share settings
 │   │   ├── users/         # User settings
 │   │   └── webdav/        # WebDAV settings
@@ -229,10 +225,7 @@ Use behind reverse proxy with `X-Forwarded-User` header.
 ### 3. NoAuth
 Disable authentication (development only).
 
-### 4. Passkey (WebAuthn)
-Modern passwordless authentication using FIDO2 security keys or platform authenticators.
-
-### 5. TOTP (Two-Factor)
+### 4. TOTP (Two-Factor)
 Add additional security with time-based one-time passwords.
 
 ## WebDAV
@@ -505,7 +498,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - Frontend powered by [Vue.js](https://vuejs.org/)
 - UI framework: [Vuetify](https://vuetifyjs.com/)
 - Database: [BoltDB](https://github.com/etcd-io/bbolt) via [Storm](https://github.com/asdine/storm)
-- WebAuthn: [go-webauthn](https://github.com/go-webauthn/webauthn)
 - TUS Protocol: [tus.io](https://tus.io/)
 
 ## Roadmap

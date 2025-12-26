@@ -60,7 +60,10 @@
     "forbidden": "これにアクセスする権限がありません。",
     "internal": "内部エラーが発生しました。",
     "notFound": "リソースが見つかりませんでした。",
-    "connection": "サーバーに接続できませんでした。"
+    "connection": "サーバーに接続できませんでした。",
+    "quotaExceeded": "ストレージ容量を超えました。ファイルを削除するか、管理者に連絡してください。",
+    "quotaExceededDuringUpload": "アップロード停止：ストレージ容量を超えました。部分ファイルは削除されました。",
+    "insufficientSpace": "このアップロードに十分なストレージ容量がありません。"
   },
   "files": {
     "body": "本文",
@@ -257,7 +260,10 @@
     "userManagement": "ユーザー管理",
     "userUpdated": "ユーザーを更新しました！",
     "username": "ユーザー名",
-    "users": "ユーザー"
+    "users": "ユーザー",
+    "storageQuota": "ストレージ容量",
+    "storageQuotaHelp": "このユーザーの最大ストレージ容量を設定します。10M、5Gなどの形式を使用してください。0に設定するか空白のままにすると無制限になります（管理者のみ）。",
+    "unlimited": "無制限"
   },
   "otp": {
     "enable": "二段階認証を有効にする",
@@ -285,26 +291,6 @@
     "printRecoveryCodes": "リカバリーコードを印刷",
     "recoveryCodesGenerated": "リカバリーコードが生成されました！",
     "useRecoveryCode": "リカバリーコードを使用"
-  },
-  "passkey": {
-    "add": "パスキーを追加",
-    "register": "パスキーを登録",
-    "delete": "パスキーを削除",
-    "deleted": "パスキーが削除されました！",
-    "registered": "パスキーが登録されました！",
-    "credentialName": "資格情報名",
-    "credentialNameHelp": "このパスキーの名前を入力してください（例：「私の指紋」、「私のハードウェアキー」）",
-    "registrationFailed": "パスキーの登録に失敗しました",
-    "title": "パスキー",
-    "description": "パスキーは、デバイスの生体認証またはハードウェアセキュリティキーを使用して認証する安全な方法です。",
-    "noPasskeys": "パスキーが登録されていません。",
-    "createdAt": "作成日",
-    "lastUsed": "最終使用日",
-    "neverUsed": "未使用",
-    "browserSupport": "お使いのブラウザはパスキーをサポートしています",
-    "browserNoSupport": "お使いのブラウザはパスキーをサポートしていません",
-    "attestationType": "証明タイプ",
-    "authenticatorAttachment": "認証器の接続"
   },
   "webdav": {
     "url": "WebDAV URL",
@@ -335,7 +321,9 @@
     "preview": "プレビュー",
     "settings": "設定",
     "signup": "サインアップ",
-    "siteSettings": "サイト設定"
+    "siteSettings": "サイト設定",
+    "storageUsed": "{total}中{used}使用",
+    "storageUsedUnlimited": "使用中（無制限）"
   },
   "success": {
     "linkCopied": "リンクをコピーしました！"

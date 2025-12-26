@@ -60,7 +60,10 @@
     "forbidden": "Vous n'avez pas la permission d'accéder à cela.",
     "internal": "Aïe ! Quelque chose s'est mal passé.",
     "notFound": "Impossible d'accéder à cet emplacement.",
-    "connection": "Le serveur est injoignable."
+    "connection": "Le serveur est injoignable.",
+    "quotaExceeded": "Quota de stockage dépassé. Veuillez supprimer des fichiers ou contacter l'administrateur.",
+    "quotaExceededDuringUpload": "Téléchargement arrêté : quota de stockage dépassé. Le fichier partiel a été supprimé.",
+    "insufficientSpace": "Espace de stockage insuffisant pour ce téléchargement."
   },
   "files": {
     "body": "Corps",
@@ -254,10 +257,13 @@
     "userCreated": "Utilisateur·ice créé !",
     "userDefaults": "Paramètres par défaut de l'utilisateur.ice",
     "userDeleted": "Utilisateur·ice supprimé !",
-    "userManagement": "Gestion des utilisateur·ices",
-    "userUpdated": "Utilisateur·ice mis à jour !",
-    "username": "Nom d'utilisateur·ice",
-    "users": "Utilisateur·ices"
+    "userManagement": "Gestion des utilisateurs",
+    "userUpdated": "Utilisateur mis à jour !",
+    "username": "Nom d'utilisateur",
+    "users": "Utilisateurs",
+    "storageQuota": "Quota de Stockage",
+    "storageQuotaHelp": "Définissez l'espace de stockage maximum pour cet utilisateur. Utilisez un format comme 10M, 5G, etc. Définissez sur 0 ou laissez vide pour illimité (administrateur uniquement).",
+    "unlimited": "Illimité"
   },
   "otp": {
     "enable": "Activer l'authentification à deux facteurs",
@@ -286,26 +292,6 @@
     "recoveryCodesGenerated": "Codes de récupération générés !",
     "useRecoveryCode": "Utiliser un code de récupération"
   },
-  "passkey": {
-    "add": "Ajouter une clé d'accès",
-    "register": "Enregistrer une clé d'accès",
-    "delete": "Supprimer la clé d'accès",
-    "deleted": "Clé d'accès supprimée !",
-    "registered": "Clé d'accès enregistrée !",
-    "credentialName": "Nom des identifiants",
-    "credentialNameHelp": "Entrez un nom pour cette clé d'accès (par exemple \"Mon empreinte digitale\", \"Ma clé matérielle\")",
-    "registrationFailed": "Échec de l'enregistrement de la clé d'accès",
-    "title": "Clés d'accès",
-    "description": "Les clés d'accès sont un moyen sécurisé de s'authentifier en utilisant la biométrie de votre appareil ou une clé de sécurité matérielle.",
-    "noPasskeys": "Vous n'avez pas encore enregistré de clés d'accès.",
-    "createdAt": "Créé le",
-    "lastUsed": "Dernière utilisation",
-    "neverUsed": "Jamais utilisé",
-    "browserSupport": "Votre navigateur prend en charge les clés d'accès",
-    "browserNoSupport": "Votre navigateur ne prend pas en charge les clés d'accès",
-    "attestationType": "Type d'attestation",
-    "authenticatorAttachment": "Attachement de l'authentificateur"
-  },
   "webdav": {
     "url": "URL WebDAV",
     "token": "Jeton WebDAV",
@@ -332,10 +318,12 @@
     "myFiles": "Mes fichiers",
     "newFile": "Nouveau fichier",
     "newFolder": "Nouveau dossier",
-    "preview": "Prévisualiser",
+    "preview": "Aperçu",
     "settings": "Paramètres",
     "signup": "S'inscrire",
-    "siteSettings": "Paramètres du site"
+    "siteSettings": "Paramètres du site",
+    "storageUsed": "sur {total} utilisé",
+    "storageUsedUnlimited": "utilisé (Illimité)"
   },
   "success": {
     "linkCopied": "Lien copié !"

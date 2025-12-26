@@ -64,7 +64,10 @@
     "forbidden": "You don't have permissions to access this.",
     "internal": "Something really went wrong.",
     "notFound": "This location can't be reached.",
-    "connection": "The server can't be reached."
+    "connection": "The server can't be reached.",
+    "quotaExceeded": "Storage quota exceeded. Please delete some files or contact administrator.",
+    "quotaExceededDuringUpload": "Upload stopped: storage quota exceeded. Partial file has been deleted.",
+    "insufficientSpace": "Not enough storage space available for this upload."
   },
   "files": {
     "body": "Body",
@@ -268,7 +271,10 @@
     "userManagement": "User Management",
     "userUpdated": "User updated!",
     "username": "Username",
-    "users": "Users"
+    "users": "Users",
+    "storageQuota": "Storage Quota",
+    "storageQuotaHelp": "Set the maximum storage space for this user. Use format like 10M, 5G, etc. Set to 0 or leave empty for unlimited (admin only).",
+    "unlimited": "Unlimited"
   },
   "otp": {
     "name": "Two-Factor Authentication",
@@ -295,29 +301,6 @@
     "resetSuccess": "TOTP secret reset successfully",
     "recoveryCodesGenerated": "Recovery codes generated successfully",
     "featureDisabled": "TOTP feature is disabled by administrator"
-  },
-  "passkey": {
-    "name": "Passkey",
-    "add": "Add Passkey",
-    "register": "Register Passkey",
-    "list": "Passkeys",
-    "delete": "Delete Passkey",
-    "credentialName": "Passkey Name",
-    "createdAt": "Created At",
-    "lastUsedAt": "Last Used At",
-    "registerSuccess": "Passkey registered successfully",
-    "deleteSuccess": "Passkey deleted successfully",
-    "noPasskeys": "No passkeys registered",
-    "registerInstructions": "Use your device's biometric authentication or security key to create a passkey",
-    "loginInstructions": "Use your passkey to login",
-    "featureDisabled": "Passkey feature is disabled by administrator",
-    "passkeyEnabled": "Passkey Enabled",
-    "passkeyDisabled": "Passkey Disabled",
-    "loginRequired": "Please log in to register a Passkey",
-    "enterName": "Enter a name for this passkey",
-    "defaultName": "My Passkey",
-    "registerFailed": "Failed to register passkey",
-    "confirmDelete": "Are you sure you want to delete this passkey?"
   },
   "webdav": {
     "name": "WebDAV",
@@ -350,7 +333,9 @@
     "preview": "Preview",
     "settings": "Settings",
     "signup": "Signup",
-    "siteSettings": "Site Settings"
+    "siteSettings": "Site Settings",
+    "storageUsed": "of {total} used",
+    "storageUsedUnlimited": "used (Unlimited)"
   },
   "success": {
     "linkCopied": "Link copied!"

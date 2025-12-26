@@ -114,12 +114,3 @@ export async function toggleOtp(id: number, enabled: boolean) {
     }),
   });
 }
-
-export async function togglePasskey(id: number, enabled: boolean) {
-  return fetchURL(`/api/users/${id}/passkey/toggle`, {
-    method: "PUT",
-    body: JSON.stringify({
-      enabled,
-    }),
-  });
-}
