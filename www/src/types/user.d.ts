@@ -7,6 +7,7 @@ interface IUser {
   perm: Permissions;
   lockPassword: boolean;
   hideDotfiles: boolean;
+  hideHiddenFolders: boolean;
   singleClick: boolean;
   dateFormat: boolean;
   viewMode: ViewModeType;
@@ -28,6 +29,7 @@ interface IUserForm {
   perm?: Permissions;
   lockPassword?: boolean;
   hideDotfiles?: boolean;
+  hideHiddenFolders?: boolean;
   singleClick?: boolean;
   dateFormat?: boolean;
 }

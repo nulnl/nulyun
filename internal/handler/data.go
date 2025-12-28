@@ -3,7 +3,9 @@ package fbhttp
 import (
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/tomasen/realip"
 
@@ -24,6 +26,42 @@ type data struct {
 
 // Check implements files.Checker.
 func (d *data) Check(path string) bool {
+	// If user is not set, allow access (should not happen in normal flow)
+	if d.user == nil {
+		return true
+	}
+
+	// Get the base name of the path
+	name := filepath.Base(path)
+
+	// Check if it's a hidden file (starts with .)
+	isHidden := strings.HasPrefix(name, ".")
+
+	if !isHidden {
+		return true
+	}
+
+	// If it's hidden, check file system to determine if it's a file or directory
+	if d.user.Fs != nil {
+		info, err := d.user.Fs.Stat(path)
+		if err == nil {
+			// If it's a directory and hideHiddenFolders is enabled
+			if info.IsDir() && d.user.HideHiddenFolders {
+				return false
+			}
+			// If it's a file and hideDotfiles is enabled
+			if !info.IsDir() && d.user.HideDotfiles {
+				return false
+			}
+		}
+	}
+
+	// Default behavior: check hideDotfiles for all hidden items
+	// if we couldn't determine the type
+	if d.user.HideDotfiles {
+		return false
+	}
+
 	return true
 }
 

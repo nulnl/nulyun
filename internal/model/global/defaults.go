@@ -8,17 +8,18 @@ import (
 // UserDefaults is a type that holds the default values
 // for some fields on User.
 type UserDefaults struct {
-	Scope          string            `json:"scope"`
-	Locale         string            `json:"locale"`
-	ViewMode       users.ViewMode    `json:"viewMode"`
-	SingleClick    bool              `json:"singleClick"`
-	Sorting        files.Sorting     `json:"sorting"`
-	Perm           users.Permissions `json:"perm"`
-	HideDotfiles   bool              `json:"hideDotfiles"`
-	DateFormat     bool              `json:"dateFormat"`
-	AceEditorTheme string            `json:"aceEditorTheme"`
-	TOTPEnabled    bool              `json:"totpEnabled"`
-	StorageQuota   int64             `json:"storageQuota"` // in bytes, 0 means unlimited
+	Scope             string            `json:"scope"`
+	Locale            string            `json:"locale"`
+	ViewMode          users.ViewMode    `json:"viewMode"`
+	SingleClick       bool              `json:"singleClick"`
+	Sorting           files.Sorting     `json:"sorting"`
+	Perm              users.Permissions `json:"perm"`
+	HideDotfiles      bool              `json:"hideDotfiles"`
+	HideHiddenFolders bool              `json:"hideHiddenFolders"`
+	DateFormat        bool              `json:"dateFormat"`
+	AceEditorTheme    string            `json:"aceEditorTheme"`
+	TOTPEnabled       bool              `json:"totpEnabled"`
+	StorageQuota      int64             `json:"storageQuota"` // in bytes, 0 means unlimited
 }
 
 // Apply applies the default options to a user.
@@ -30,6 +31,7 @@ func (d *UserDefaults) Apply(u *users.User) {
 	u.Perm = d.Perm
 	u.Sorting = d.Sorting
 	u.HideDotfiles = d.HideDotfiles
+	u.HideHiddenFolders = d.HideHiddenFolders
 	u.DateFormat = d.DateFormat
 	u.AceEditorTheme = d.AceEditorTheme
 	u.LockPassword = false

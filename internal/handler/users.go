@@ -33,22 +33,23 @@ type modifyUserRequest struct {
 }
 
 type createUserRequest struct {
-	What           string            `json:"what"`
-	Which          []string          `json:"which"`
-	Username       string            `json:"username"`
-	Password       string            `json:"password"`
-	Scope          string            `json:"scope"`
-	Locale         string            `json:"locale"`
-	LockPassword   bool              `json:"lockPassword"`
-	ViewMode       users.ViewMode    `json:"viewMode"`
-	SingleClick    bool              `json:"singleClick"`
-	Perm           users.Permissions `json:"perm"`
-	Sorting        files.Sorting     `json:"sorting"`
-	HideDotfiles   bool              `json:"hideDotfiles"`
-	DateFormat     bool              `json:"dateFormat"`
-	AceEditorTheme string            `json:"aceEditorTheme"`
-	TOTPEnabled    bool              `json:"totpEnabled"`
-	StorageQuota   string            `json:"storageQuota"` // Accept as string from frontend
+	What              string            `json:"what"`
+	Which             []string          `json:"which"`
+	Username          string            `json:"username"`
+	Password          string            `json:"password"`
+	Scope             string            `json:"scope"`
+	Locale            string            `json:"locale"`
+	LockPassword      bool              `json:"lockPassword"`
+	ViewMode          users.ViewMode    `json:"viewMode"`
+	SingleClick       bool              `json:"singleClick"`
+	Perm              users.Permissions `json:"perm"`
+	Sorting           files.Sorting     `json:"sorting"`
+	HideDotfiles      bool              `json:"hideDotfiles"`
+	HideHiddenFolders bool              `json:"hideHiddenFolders"`
+	DateFormat        bool              `json:"dateFormat"`
+	AceEditorTheme    string            `json:"aceEditorTheme"`
+	TOTPEnabled       bool              `json:"totpEnabled"`
+	StorageQuota      string            `json:"storageQuota"` // Accept as string from frontend
 }
 
 type enableTOTPVerificationRequest struct {
@@ -194,17 +195,16 @@ var userPostHandler = withAdmin(func(w http.ResponseWriter, r *http.Request, d *
 
 	// Create user from request
 	newUser := &users.User{
-		Username:       createReq.Data.Username,
-		Password:       createReq.Data.Password,
-		Scope:          createReq.Data.Scope,
-		Locale:         createReq.Data.Locale,
-		LockPassword:   createReq.Data.LockPassword,
-		ViewMode:       createReq.Data.ViewMode,
-		SingleClick:    createReq.Data.SingleClick,
-		Perm:           createReq.Data.Perm,
-		Sorting:        createReq.Data.Sorting,
-		HideDotfiles:   createReq.Data.HideDotfiles,
-		DateFormat:     createReq.Data.DateFormat,
+		Username:     createReq.Data.Username,
+		Password:     createReq.Data.Password,
+		Scope:        createReq.Data.Scope,
+		Locale:       createReq.Data.Locale,
+		LockPassword: createReq.Data.LockPassword,
+		ViewMode:     createReq.Data.ViewMode,
+		SingleClick:  createReq.Data.SingleClick,
+		Perm:         createReq.Data.Perm,
+		Sorting:      createReq.Data.Sorting,
+		HideDotfiles: createReq.Data.HideDotfiles, HideHiddenFolders: createReq.Data.HideHiddenFolders, DateFormat: createReq.Data.DateFormat,
 		AceEditorTheme: createReq.Data.AceEditorTheme,
 		TOTPEnabled:    createReq.Data.TOTPEnabled,
 	}

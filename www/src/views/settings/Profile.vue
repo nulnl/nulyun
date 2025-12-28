@@ -12,6 +12,10 @@
             {{ t("settings.hideDotfiles") }}
           </p>
           <p>
+            <input type="checkbox" name="hideHiddenFolders" v-model="hideHiddenFolders" />
+            {{ t("settings.hideHiddenFolders") }}
+          </p>
+          <p>
             <input type="checkbox" name="singleClick" v-model="singleClick" />
             {{ t("settings.singleClick") }}
           </p>
@@ -106,6 +110,7 @@ const $showError = inject<IToastError>("$showError")!;
 const password = ref<string>("");
 const passwordConf = ref<string>("");
 const hideDotfiles = ref<boolean>(false);
+const hideHiddenFolders = ref<boolean>(true);
 const singleClick = ref<boolean>(false);
 const dateFormat = ref<boolean>(false);
 const locale = ref<string>("");
@@ -129,6 +134,7 @@ onMounted(async () => {
   layoutStore.loading = true;
   if (authStore.user === null) return false;
   locale.value = authStore.user.locale;
+  hideHiddenFolders.value = authStore.user.hideHiddenFolders;
   hideDotfiles.value = authStore.user.hideDotfiles;
   singleClick.value = authStore.user.singleClick;
   dateFormat.value = authStore.user.dateFormat;
@@ -174,6 +180,7 @@ const updateSettings = async (event: Event) => {
       id: authStore.user.id,
       locale: locale.value,
       hideDotfiles: hideDotfiles.value,
+      hideHiddenFolders: hideHiddenFolders.value,
       singleClick: singleClick.value,
       dateFormat: dateFormat.value,
       aceEditorTheme: aceEditorTheme.value,
@@ -182,6 +189,7 @@ const updateSettings = async (event: Event) => {
     await api.update(data, [
       "locale",
       "hideDotfiles",
+      "hideHiddenFolders",
       "singleClick",
       "dateFormat",
       "aceEditorTheme",

@@ -29,18 +29,19 @@ type loginResponse struct {
 }
 
 type userInfo struct {
-	ID             uint              `json:"id"`
-	Locale         string            `json:"locale"`
-	ViewMode       users.ViewMode    `json:"viewMode"`
-	SingleClick    bool              `json:"singleClick"`
-	Perm           users.Permissions `json:"perm"`
-	LockPassword   bool              `json:"lockPassword"`
-	HideDotfiles   bool              `json:"hideDotfiles"`
-	DateFormat     bool              `json:"dateFormat"`
-	Username       string            `json:"username"`
-	AceEditorTheme string            `json:"aceEditorTheme"`
-	OTPEnabled     bool              `json:"otpEnabled"`
-	OTPPending     bool              `json:"otpPending"`
+	ID                uint              `json:"id"`
+	Locale            string            `json:"locale"`
+	ViewMode          users.ViewMode    `json:"viewMode"`
+	SingleClick       bool              `json:"singleClick"`
+	Perm              users.Permissions `json:"perm"`
+	LockPassword      bool              `json:"lockPassword"`
+	HideDotfiles      bool              `json:"hideDotfiles"`
+	HideHiddenFolders bool              `json:"hideHiddenFolders"`
+	DateFormat        bool              `json:"dateFormat"`
+	Username          string            `json:"username"`
+	AceEditorTheme    string            `json:"aceEditorTheme"`
+	OTPEnabled        bool              `json:"otpEnabled"`
+	OTPPending        bool              `json:"otpPending"`
 }
 
 type authToken struct {
@@ -216,14 +217,13 @@ func renewHandler(tokenExpireTime time.Duration) handleFunc {
 func printToken(w http.ResponseWriter, _ *http.Request, d *data, user *users.User, tokenExpirationTime time.Duration) (int, error) {
 	claims := &authToken{
 		User: userInfo{
-			ID:             user.ID,
-			Locale:         user.Locale,
-			ViewMode:       user.ViewMode,
-			SingleClick:    user.SingleClick,
-			Perm:           user.Perm,
-			LockPassword:   user.LockPassword,
-			HideDotfiles:   user.HideDotfiles,
-			DateFormat:     user.DateFormat,
+			ID:           user.ID,
+			Locale:       user.Locale,
+			ViewMode:     user.ViewMode,
+			SingleClick:  user.SingleClick,
+			Perm:         user.Perm,
+			LockPassword: user.LockPassword,
+			HideDotfiles: user.HideDotfiles, HideHiddenFolders: user.HideHiddenFolders, DateFormat: user.DateFormat,
 			Username:       user.Username,
 			AceEditorTheme: user.AceEditorTheme,
 			OTPEnabled:     user.TOTPSecret != "" && user.TOTPVerified, OTPPending: user.TOTPSecret != "" && !user.TOTPVerified},

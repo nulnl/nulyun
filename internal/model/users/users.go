@@ -19,26 +19,27 @@ const (
 
 // User describes a user.
 type User struct {
-	ID             uint          `storm:"id,increment" json:"id"`
-	Username       string        `storm:"unique" json:"username"`
-	Password       string        `json:"password"`
-	Scope          string        `json:"scope"`
-	Locale         string        `json:"locale"`
-	LockPassword   bool          `json:"lockPassword"`
-	ViewMode       ViewMode      `json:"viewMode"`
-	SingleClick    bool          `json:"singleClick"`
-	Perm           Permissions   `json:"perm"`
-	Sorting        files.Sorting `json:"sorting"`
-	Fs             afero.Fs      `json:"-" yaml:"-"`
-	HideDotfiles   bool          `json:"hideDotfiles"`
-	DateFormat     bool          `json:"dateFormat"`
-	AceEditorTheme string        `json:"aceEditorTheme"`
-	TOTPSecret     string        `json:"totpSecret"`
-	TOTPNonce      string        `json:"totpNonce"`
-	TOTPVerified   bool          `json:"totpVerified"`
-	TOTPEnabled    bool          `json:"totpEnabled"`
-	RecoveryCodes  []string      `json:"recoveryCodes"`
-	StorageQuota   int64         `json:"storageQuota"` // in bytes, 0 means unlimited
+	ID                uint          `storm:"id,increment" json:"id"`
+	Username          string        `storm:"unique" json:"username"`
+	Password          string        `json:"password"`
+	Scope             string        `json:"scope"`
+	Locale            string        `json:"locale"`
+	LockPassword      bool          `json:"lockPassword"`
+	ViewMode          ViewMode      `json:"viewMode"`
+	SingleClick       bool          `json:"singleClick"`
+	Perm              Permissions   `json:"perm"`
+	Sorting           files.Sorting `json:"sorting"`
+	Fs                afero.Fs      `json:"-" yaml:"-"`
+	HideDotfiles      bool          `json:"hideDotfiles"`
+	HideHiddenFolders bool          `json:"hideHiddenFolders"`
+	DateFormat        bool          `json:"dateFormat"`
+	AceEditorTheme    string        `json:"aceEditorTheme"`
+	TOTPSecret        string        `json:"totpSecret"`
+	TOTPNonce         string        `json:"totpNonce"`
+	TOTPVerified      bool          `json:"totpVerified"`
+	TOTPEnabled       bool          `json:"totpEnabled"`
+	RecoveryCodes     []string      `json:"recoveryCodes"`
+	StorageQuota      int64         `json:"storageQuota"` // in bytes, 0 means unlimited
 }
 
 var checkableFields = []string{

@@ -17,6 +17,7 @@ interface SettingsDefaults {
   sorting: Sorting;
   perm: Permissions;
   hideDotfiles: boolean;
+  hideHiddenFolders: boolean;
   dateFormat: boolean;
   aceEditorTheme: string;
 }

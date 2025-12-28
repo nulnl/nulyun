@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const DefaultUsersHomeBasePath = "/users"
+const DefaultUsersHomeBasePath = "/.users"
 const DefaultLogoutPage = "/login"
 const DefaultMinimumPasswordLength = 12
 const DefaultFileMode = 0640
