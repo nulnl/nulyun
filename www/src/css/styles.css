@@ -108,10 +108,48 @@ main .spinner .bounce2 {
   padding: 0.4em;
   transition: 0.1s ease-in-out all;
   border-radius: 50%;
+  pointer-events: none;
+}
+
+.action span {
+  pointer-events: none;
 }
 
 .action:hover {
   background-color: var(--hover);
+}
+
+/* Custom tooltip for action buttons (fallback and consistent across browsers) */
+.action[data-tooltip] {
+  position: relative;
+}
+.action[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surfacePrimary);
+  color: var(--textPrimary);
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 30000;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+.action[data-tooltip]:hover::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--surfacePrimary) transparent;
+  z-index: 30000;
+  pointer-events: none;
 }
 
 .action ul {

@@ -49,6 +49,19 @@
     "increaseFontSize": "Increase font size",
     "decreaseFontSize": "Decrease font size"
   },
+  "tooltips": {
+    "search": "파일 검색",
+    "share": "선택한 항목 공유",
+    "rename": "선택한 항목 이름 바꾸기",
+    "copy": "선택한 항목 복사",
+    "move": "선택한 항목 이동",
+    "delete": "선택한 항목 삭제",
+    "download": "선택한 항목 다운로드",
+    "upload": "파일 업로드",
+    "info": "상세 정보 보기",
+    "selectMultiple": "여러 항목 선택",
+    "switchView": "목록 및 그리드 보기 전환"
+  },
   "download": {
     "downloadFile": "파일 다운로드",
     "downloadFolder": "폴더 다운로드",

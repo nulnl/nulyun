@@ -25,7 +25,9 @@ export const useAuthStore = defineStore("auth", {
         return;
       }
 
-      setLocale(user.locale || detectLocale());
+      // Don't auto-detect browser language when no user preference is set.
+      // Use English by default unless the user has a saved locale.
+      setLocale(user.locale || "en");
       this.user = user;
     },
     updateUser(user: Partial<IUser>) {

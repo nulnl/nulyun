@@ -7,6 +7,7 @@
         class="search-button"
         icon="search"
         :label="t('buttons.search')"
+        :tooltip="t('tooltips.search')"
         @action="openSearch()"
       />
 
@@ -16,12 +17,14 @@
             v-if="headerButtons.share"
             icon="share"
             :label="t('buttons.share')"
+            :tooltip="t('tooltips.share')"
             show="share"
           />
           <action
             v-if="headerButtons.rename"
             icon="mode_edit"
             :label="t('buttons.rename')"
+            :tooltip="t('tooltips.rename')"
             show="rename"
           />
           <action
@@ -29,6 +32,7 @@
             id="copy-button"
             icon="content_copy"
             :label="t('buttons.copyFile')"
+            :tooltip="t('tooltips.copy')"
             show="copy"
           />
           <action
@@ -36,6 +40,7 @@
             id="move-button"
             icon="forward"
             :label="t('buttons.moveFile')"
+            :tooltip="t('tooltips.move')"
             show="move"
           />
           <action
@@ -43,6 +48,7 @@
             id="delete-button"
             icon="delete"
             :label="t('buttons.delete')"
+            :tooltip="t('tooltips.delete')"
             show="delete"
           />
         </template>
@@ -50,12 +56,14 @@
         <action
           :icon="viewIcon"
           :label="t('buttons.switchView')"
+          :tooltip="t('tooltips.switchView')"
           @action="switchView"
         />
         <action
           v-if="headerButtons.download"
           icon="file_download"
           :label="t('buttons.download')"
+          :tooltip="t('tooltips.download')"
           @action="download"
           :counter="fileStore.selectedCount"
         />
@@ -64,12 +72,14 @@
           icon="file_upload"
           id="upload-button"
           :label="t('buttons.upload')"
+          :tooltip="t('tooltips.upload')"
           @action="uploadFunc"
         />
-        <action icon="info" :label="t('buttons.info')" show="info" />
+        <action icon="info" :label="t('buttons.info')" :tooltip="t('tooltips.info')" show="info" />
         <action
           icon="check_circle"
           :label="t('buttons.selectMultiple')"
+          :tooltip="t('tooltips.selectMultiple')"
           @action="toggleMultipleSelection"
         />
       </template>
@@ -83,30 +93,35 @@
         v-if="headerButtons.share"
         icon="share"
         :label="t('buttons.share')"
+        :tooltip="t('tooltips.share')"
         show="share"
       />
       <action
         v-if="headerButtons.rename"
         icon="mode_edit"
         :label="t('buttons.rename')"
+        :tooltip="t('tooltips.rename')"
         show="rename"
       />
       <action
         v-if="headerButtons.copy"
         icon="content_copy"
         :label="t('buttons.copyFile')"
+        :tooltip="t('tooltips.copy')"
         show="copy"
       />
       <action
         v-if="headerButtons.move"
         icon="forward"
         :label="t('buttons.moveFile')"
+        :tooltip="t('tooltips.move')"
         show="move"
       />
       <action
         v-if="headerButtons.delete"
         icon="delete"
         :label="t('buttons.delete')"
+        :tooltip="t('tooltips.delete')"
         show="delete"
       />
     </div>
@@ -286,7 +301,7 @@
             @action="download"
             :counter="fileStore.selectedCount"
           />
-          <action icon="info" :label="t('buttons.info')" show="info" />
+          <action icon="info" :label="t('buttons.info')" :tooltip="t('tooltips.info')" show="info" />
         </context-menu>
 
         <input

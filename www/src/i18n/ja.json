@@ -49,6 +49,19 @@
     "increaseFontSize": "Increase font size",
     "decreaseFontSize": "Decrease font size"
   },
+  "tooltips": {
+    "search": "ファイルを検索",
+    "share": "選択した項目を共有",
+    "rename": "選択した項目の名前を変更",
+    "copy": "選択した項目をコピー",
+    "move": "選択した項目を移動",
+    "delete": "選択した項目を削除",
+    "download": "選択した項目をダウンロード",
+    "upload": "ファイルをアップロード",
+    "info": "詳細を表示",
+    "selectMultiple": "複数の項目を選択",
+    "switchView": "リストとグリッド表示を切り替え"
+  },
   "download": {
     "downloadFile": "ファイルのダウンロード",
     "downloadFolder": "フォルダーのダウンロード",

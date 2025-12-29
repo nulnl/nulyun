@@ -18,49 +18,42 @@ import("dayjs/locale/zh-tw");
 import messages from "@intlify/unplugin-vue-i18n/messages";
 
 export function detectLocale() {
-  // locale is an RFC 5646 language tag
-  // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/language
-  let locale = navigator.language.toLowerCase();
-  switch (true) {
-    case /^es\b/.test(locale):
-      locale = "es";
-      break;
-    case /^en\b/.test(locale):
-      locale = "en";
-      break;
-    case /^it\b/.test(locale):
-      locale = "it";
-      break;
-    case /^fr\b/.test(locale):
-      locale = "fr";
-      break;
-    case /^pt-br\b/.test(locale):
-      locale = "pt-br";
-      break;
-    case /^ja\b/.test(locale):
-      locale = "ja";
-      break;
-    case /^zh-tw\b/.test(locale):
-      locale = "zh-tw";
-      break;
-    case /^zh-cn\b/.test(locale):
-    case /^zh\b/.test(locale):
-      locale = "zh-cn";
-      break;
-    case /^de\b/.test(locale):
-      locale = "de";
-      break;
-    case /^ru\b/.test(locale):
-      locale = "ru";
-      break;
-    case /^ko\b/.test(locale):
-      locale = "ko";
-      break;
-    default:
-      locale = "en";
-  }
+  // locale is an RFC 5646 language tag (e.g. en-US, pt-BR, zh-Hant-TW)
+  // Use navigator.language (or the first navigator.languages entry) and map
+  // to the supported locales. Be permissive with region subtags.
+  const raw = (navigator.language || (navigator.languages && navigator.languages[0]) || "en").toLowerCase();
+  const parts = raw.split("-");
+  const lang = parts[0];
+  const region = parts[1] || "";
 
-  return locale;
+  // Map language + region to available message keys
+  switch (lang) {
+    case "es":
+      return "es";
+    case "en":
+      return "en";
+    case "it":
+      return "it";
+    case "fr":
+      return "fr";
+    case "pt":
+      // only pt-br is provided; default pt -> pt-br
+      return region === "br" ? "pt-br" : "pt-br";
+    case "ja":
+      return "ja";
+    case "zh":
+      // prefer traditional for TW/HK, simplified otherwise
+      if (region === "tw" || region === "hk" || raw.includes("hant")) return "zh-tw";
+      return "zh-cn";
+    case "de":
+      return "de";
+    case "ru":
+      return "ru";
+    case "ko":
+      return "ko";
+    default:
+      return "en";
+  }
 }
 
 // TODO: was this really necessary?
@@ -79,7 +72,9 @@ export function detectLocale() {
 export const rtlLanguages: string[] = [];
 
 export const i18n = createI18n({
-  locale: detectLocale(),
+  // Do not auto-detect browser language on startup — use English by default.
+  // Language can still be changed later via `setLocale()` (e.g. user setting).
+  locale: "en",
   fallbackLocale: "en",
   messages,
   // expose i18n.global for outside components

@@ -49,6 +49,19 @@
     "increaseFontSize": "Increase font size",
     "decreaseFontSize": "Decrease font size"
   },
+  "tooltips": {
+    "search": "搜尋檔案",
+    "share": "分享所選項目",
+    "rename": "重新命名所選項目",
+    "copy": "複製所選項目",
+    "move": "移動所選項目",
+    "delete": "刪除所選項目",
+    "download": "下載所選項目",
+    "upload": "上傳檔案",
+    "info": "查看詳細資訊",
+    "selectMultiple": "選擇多個項目",
+    "switchView": "切換列表和網格視圖"
+  },
   "download": {
     "downloadFile": "下載檔案",
     "downloadFolder": "下載資料夾",

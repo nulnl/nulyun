@@ -53,6 +53,19 @@
     "increaseFontSize": "Increase font size",
     "decreaseFontSize": "Decrease font size"
   },
+  "tooltips": {
+    "search": "Search files",
+    "share": "Share selected items",
+    "rename": "Rename selected item",
+    "copy": "Copy selected items",
+    "move": "Move selected items",
+    "delete": "Delete selected items",
+    "download": "Download selected items",
+    "upload": "Upload files",
+    "info": "View item details",
+    "selectMultiple": "Select multiple items",
+    "switchView": "Switch between list and grid view"
+  },
   "download": {
     "downloadFile": "Download File",
     "downloadFolder": "Download Folder",

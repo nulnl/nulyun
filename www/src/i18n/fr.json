@@ -49,6 +49,19 @@
     "increaseFontSize": "Increase font size",
     "decreaseFontSize": "Decrease font size"
   },
+  "tooltips": {
+    "search": "Rechercher des fichiers",
+    "share": "Partager les éléments sélectionnés",
+    "rename": "Renommer l'élément sélectionné",
+    "copy": "Copier les éléments sélectionnés",
+    "move": "Déplacer les éléments sélectionnés",
+    "delete": "Supprimer les éléments sélectionnés",
+    "download": "Télécharger les éléments sélectionnés",
+    "upload": "Téléverser des fichiers",
+    "info": "Voir les détails",
+    "selectMultiple": "Sélectionner plusieurs éléments",
+    "switchView": "Basculer entre les vues liste et grille"
+  },
   "download": {
     "downloadFile": "Télécharger le fichier",
     "downloadFolder": "Télécharger le dossier",

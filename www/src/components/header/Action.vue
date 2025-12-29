@@ -1,6 +1,6 @@
 <template>
-  <button @click="action" :aria-label="label" :title="label" class="action">
-    <i class="material-icons">{{ icon }}</i>
+  <button @click="action" :aria-label="label" :title="tooltip || label" :data-tooltip="tooltip || label" class="action">
+    <i class="material-icons" :title="tooltip || label">{{ icon }}</i>
     <span>{{ label }}</span>
     <span v-if="counter && counter > 0" class="counter">{{ counter }}</span>
   </button>
@@ -12,6 +12,7 @@ import { useLayoutStore } from "@/stores/layout";
 const props = defineProps<{
   icon?: string;
   label?: string;
+  tooltip?: string;
   counter?: number;
   show?: string;
 }>();

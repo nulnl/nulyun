@@ -49,6 +49,19 @@
     "increaseFontSize": "增大字体大小",
     "decreaseFontSize": "减小字体大小"
   },
+  "tooltips": {
+    "search": "搜索文件",
+    "share": "分享所选项目",
+    "rename": "重命名所选项目",
+    "copy": "复制所选项目",
+    "move": "移动所选项目",
+    "delete": "删除所选项目",
+    "download": "下载所选项目",
+    "upload": "上传文件",
+    "info": "查看详细信息",
+    "selectMultiple": "选择多个项目",
+    "switchView": "切换列表和网格视图"
+  },
   "download": {
     "downloadFile": "下载文件",
     "downloadFolder": "下载文件夹",
