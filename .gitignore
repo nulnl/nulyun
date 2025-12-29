@@ -37,3 +37,4 @@ build/
 default.nix
 Dockerfile.dev
 
+data

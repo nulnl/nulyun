@@ -46,22 +46,16 @@ func (d *data) Check(path string) bool {
 		info, err := d.user.Fs.Stat(path)
 		if err == nil {
 			// If it's a directory and hideHiddenFolders is enabled
-			if info.IsDir() && d.user.HideHiddenFolders {
-				return false
+			if info.IsDir() {
+				return !d.user.HideHiddenFolders
 			}
 			// If it's a file and hideDotfiles is enabled
-			if !info.IsDir() && d.user.HideDotfiles {
-				return false
-			}
+			return !d.user.HideDotfiles
 		}
 	}
 
-	// Default behavior: check hideDotfiles for all hidden items
-	// if we couldn't determine the type
-	if d.user.HideDotfiles {
-		return false
-	}
-
+	// Default behavior: if we couldn't determine the type, show it
+	// This is safer than hiding it by default
 	return true
 }
 
